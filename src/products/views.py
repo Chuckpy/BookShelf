@@ -22,7 +22,7 @@ class ProductList(GenericViewSet,ListModelMixin):
     serializer_class= ProductSerializer 
     filter_backends = [filters.SearchFilter,DjangoFilterBackend]
     filterset_fields = ['sub_category', ]
-    search_fields = ['name', 'sub_category', 'sub_category__category']
+    search_fields = ['name', 'sub_category__name', 'sub_category__category__name']
 
 
 class ProductCreate(GenericViewSet,CreateModelMixin):
@@ -50,7 +50,7 @@ class ProductDetail(GenericViewSet,RetrieveModelMixin):
 class ProductDelete(GenericViewSet,DestroyModelMixin):
     authentication_classes=[TokenAuthentication]
     lookup_field='slug'
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset=Products.objects.all()
     serializer_class= ProductSerializer
 
