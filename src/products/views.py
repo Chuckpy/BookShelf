@@ -4,6 +4,7 @@ from .serializers import ProductSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.mixins import (CreateModelMixin, 
                                     ListModelMixin,
@@ -25,6 +26,7 @@ class ProductList(GenericViewSet,ListModelMixin):
 
 
 class ProductCreate(GenericViewSet,CreateModelMixin):
+    authentication_classes=[TokenAuthentication]
     permission_classes = [IsAuthenticated]
     queryset=Products.objects.all()
     serializer_class= ProductSerializer
@@ -32,6 +34,7 @@ class ProductCreate(GenericViewSet,CreateModelMixin):
 
 class ProductUpdate(GenericViewSet,UpdateModelMixin):
     lookup_field='slug'
+    authentication_classes=[TokenAuthentication]
     permission_classes = [IsAuthenticated]
     queryset=Products.objects.all()
     serializer_class= ProductSerializer
@@ -39,14 +42,15 @@ class ProductUpdate(GenericViewSet,UpdateModelMixin):
 
 class ProductDetail(GenericViewSet,RetrieveModelMixin):
     lookup_field='slug'
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset=Products.objects.all()
     serializer_class= ProductSerializer
 
 
 class ProductDelete(GenericViewSet,DestroyModelMixin):
+    authentication_classes=[TokenAuthentication]
     lookup_field='slug'
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset=Products.objects.all()
     serializer_class= ProductSerializer
 

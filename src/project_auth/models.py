@@ -17,11 +17,11 @@ class BaseUser(User, BaseMixin, AddressMixin):
     image = models.ImageField("Imagem",default="default_profile.jpeg", upload_to=upload_perfil_user,null=True, blank=True)
     phone_number = models.CharField("Número de telefone",max_length=20, null=True, blank=True)
     bio = models.CharField(null=True, blank=True, max_length=2000)
-    categories = models.ManyToManyField('products.Category', blank=True, verbose_name="Categorias Preferidas")
+    categories = models.ManyToManyField('products.Category',blank=True, verbose_name="Categorias Preferidas")
 
     class Meta:
-        verbose_name = 'Usuário'
-        verbose_name_plural = 'Usuários'
+        verbose_name = 'Cliente'
+        verbose_name_plural = 'Clientes'
 
     def __str__(self):
         return f"{self.id}-{self.username}"

@@ -21,8 +21,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('__debug__/', include(debug_toolbar.urls)),
     path('products/', include('src.products.routers')),
-    path('', include('src.products.routers'))
-
+    path('project_auth/', include('src.project_auth.routers')),
+    path('', include('src.products.routers')),
 ]
 
 

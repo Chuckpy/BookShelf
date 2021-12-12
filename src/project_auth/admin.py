@@ -3,8 +3,11 @@ from .models import BaseUser
 
 class BaseUserAdmin(admin.ModelAdmin):
     fieldsets = (
+        ("Dados de Cadastro" , {
+            'fields': ('username', 'password','email'),
+        }),
         ("Dados de Registro", {
-            'fields':('first_name', 'last_name', 'email', 'bio', 'phone_number', 'image')
+            'fields':('first_name', 'last_name',  'bio', 'phone_number', 'image')
         }),
         ("Dados do Endereço", {
             'fields': ("city", "country", "state", "neighborhood", "street")
