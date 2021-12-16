@@ -37,10 +37,10 @@ INSTALLED_APPS = [
     # Apps terceiros
     'oauth2_provider',
     'social_django',
-    'rest_framework_social_oauth2',
     'debug_toolbar',
     'rest_framework',
-    "rest_framework.authtoken",    
+    'rest_framework.authtoken',  
+    'rest_framework_social_oauth2',  
 ]
 
 

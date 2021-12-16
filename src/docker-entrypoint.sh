@@ -6,6 +6,9 @@ export DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
 echo "Aplly database migrations"
 python manage.py makemigrations
 
+echo "Collecting static files"
+python3 manage.py collectstatic --noinput
+
 until python manage.py migrate; do
   >&2 echo "Postgres may be unavailable - sleeping"
   sleep 10
