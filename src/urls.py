@@ -6,7 +6,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('grappelli/', include('grappelli.urls')), # grappelli URLS
+    path('admin/', admin.site.urls), # admin site
     path('__debug__/', include(debug_toolbar.urls)),
     path('products/', include('src.products.routers')),
     path('project_auth/', include('src.project_auth.routers')),
