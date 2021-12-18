@@ -22,10 +22,11 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.contenttypes',
+    'grappelli.dashboard',
     'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -198,3 +199,8 @@ AUTHENTICATION_BACKENDS = (
    'rest_framework_social_oauth2.backends.DjangoOAuth2',
    'django.contrib.auth.backends.ModelBackend',
 )
+
+# Graphelli admin template
+
+GRAPPELLI_ADMIN_TITLE='Painel Administrativo'
+GRAPPELLI_INDEX_DASHBOARD = 'src.project.dashboard.CustomIndexDashboard'
