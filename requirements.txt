@@ -8,6 +8,7 @@ django-filter==21.1
 django-base64field==1.0
 django-oauth-toolkit==1.5.0
 django-rest-framework-social-oauth2==1.1.0
+django-admin-rangefilter
 psycopg2== 2.9.1
 psycopg2-binary==2.8.4
 requests==2.25.1

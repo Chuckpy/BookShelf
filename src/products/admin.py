@@ -1,4 +1,5 @@
 from django.contrib import admin
+from rangefilter.filters import DateRangeFilter
 
 from .models import (
     Category, 
@@ -26,7 +27,9 @@ class ProductsAdmin(admin.ModelAdmin):
         }),        
     )
     list_display= ('name', 'owner','get_category','sub_category','created')
-    list_filter=('created','sub_category')
+    list_filter = (
+        ('created', DateRangeFilter), ('updated', DateRangeFilter), 'sub_category', 'sub_category__category'
+    )
     search_fields=('id','name','owner')
 
     inlines = [   
