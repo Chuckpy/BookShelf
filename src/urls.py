@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path('grappelli/', include('grappelli.urls')), # grappelli URLS
     path('grappelli-docs/', include('grappelli.urls_docs')), # grappelli docs URLS
