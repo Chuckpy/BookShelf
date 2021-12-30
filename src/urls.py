@@ -20,7 +20,6 @@ urlpatterns = [
 
 admin.site.site_header = 'Sistema de Gestão'
 admin.site.index_title= 'Administração'
-admin.site.site_title = 'Seja bem vindo a gestão de produtos e serviços'
 
 
 if settings.DEBUG:

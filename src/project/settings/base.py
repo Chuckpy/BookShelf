@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django_filters',
     'social_django',
     # Meus apps
+    'src.core.core_admin',
     'src.products',
     'src.project_auth',
     # Apps terceiros
