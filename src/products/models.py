@@ -80,12 +80,10 @@ class ProductImages(models.Model):
 
     product = models.ForeignKey(Products, default=None, related_name="images", on_delete=models.CASCADE)
     image = models.ImageField("Imagem",upload_to=upload_product, blank=True)
-    position = models.PositiveSmallIntegerField("Posição", null=True)
 
     class Meta :
         verbose_name = "Imagem do Produto"
         verbose_name_plural = "Imagens do Produto"
-        ordering = ['position']
 
     def __str__(self):        
         return f"{self.product.slug}"

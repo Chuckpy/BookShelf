@@ -10,18 +10,12 @@ from .models import (
 
 # Imagem do Produto Inline
 class ImageInLine(admin.TabularInline):   
-    fields = ('image', 'position') 
+    fields = ('image',) 
     model = ProductImages
-    classes = ('grp-collapse grp-closed',)
-    sortable_field_name = "position"
 
 
 class ProductsAdmin(admin.ModelAdmin):
     
-    raw_id_fields = ('owner',)    
-    related_lookup_fields = {
-        'fk': ['owner'],
-    }
     fieldsets = (
         ("Principal",{
             'fields': ('name','short_description')

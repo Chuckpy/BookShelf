@@ -7,8 +7,6 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('grappelli/', include('grappelli.urls')), # grappelli URLS
-    path('grappelli-docs/', include('grappelli.urls_docs')), # grappelli docs URLS
     path('admin/', admin.site.urls), # admin site
     path('__debug__/', include(debug_toolbar.urls)),
     path('products/', include('src.products.routers')),
