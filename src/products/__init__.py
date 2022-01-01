@@ -1,1 +1,1 @@
-default_app_config = 'src.products.ProductsConfig'
+# default_app_config = 'products.apps.ProductsConfig'

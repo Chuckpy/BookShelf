@@ -29,12 +29,16 @@ class BaseUser(User, BaseMixin, AddressMixin):
 
     def save(self, *args, **kwargs):
 
-        im = Image.open(self.image)
-        im = im.convert('RGB')
-        im = ImageOps.exif_transpose(im)      
-        im_io = BytesIO() 
-        im.save(im_io, 'JPEG', quality=15)
-        new_image = File(im_io, f'{self.username}_profile_picture')
-        self.image = new_image
+        if self.image :
+            try :
+                im = Image.open(self.image)
+                im = im.convert('RGB')
+                im = ImageOps.exif_transpose(im)      
+                im_io = BytesIO() 
+                im.save(im_io, 'JPEG', quality=15)
+                new_image = File(im_io, f'{self.username}_profile_picture')
+                self.image = new_image
+            except Exception as e:
+                print(e)
       
         super().save(*args, **kwargs)
