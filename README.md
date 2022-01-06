@@ -2,7 +2,6 @@
 
 
 
-
 ## História e Objetivo : 
 O projeto  tem como objetivo ser uma aplicação para gestão de produtos, venda e compra de produtos e serviços, bem como a inteligência de armazenamento. A aplicação hoje é feito em Django e segue os principios [REST](https://www.infoq.com/br/articles/rest-introduction/) para que possa ter um front-end agradável futuramente.
 ## Principais Caracteristicas :
