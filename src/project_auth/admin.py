@@ -17,8 +17,8 @@ class ClientAdmin(admin.ModelAdmin):
         })
     )
     
-    list_display = ('username', 'email', 'first_name', 'last_name')
-    search_fields =('id', 'first_name', 'last_name', 'email', 'phone_number')
+    list_display = ('username', 'email', 'first_name', 'phone_number')
+    search_fields =('id', 'first_name', 'last_name', 'email')
 
 
 admin.site.register(Client, ClientAdmin)

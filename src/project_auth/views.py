@@ -58,7 +58,6 @@ class Register(generics.GenericAPIView):
 
         categories = request.data.get('categories', None)
         if categories :
-
             categories = list(map(int, categories.split(',')))            
             cat = list(Category.objects.filter(id__in=categories).values_list('id', flat=True))        
 
