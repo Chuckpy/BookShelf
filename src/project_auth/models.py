@@ -1,8 +1,6 @@
-
 from django.db import models
-from django.contrib.auth.models import User
+from core.core_auth.models import CoreUser
 from django.core.files import File
-from core.utils.mixins.base import BaseMixin
 from core.utils.mixins.address import AddressMixin
 
 from io import BytesIO
@@ -12,7 +10,7 @@ from PIL import Image, ImageOps
 def upload_perfil_user(instance, filename):
     return f"profile_photos/{instance.username}/{filename}"
 
-class BaseUser(User, BaseMixin, AddressMixin):
+class Client(CoreUser, AddressMixin):
 
     image = models.ImageField(verbose_name="Imagem de Perfil", default="default_profile.jpg", upload_to=upload_perfil_user)
     phone_number = models.CharField("Número de telefone",max_length=20, null=True, blank=True)

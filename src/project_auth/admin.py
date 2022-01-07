@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import BaseUser
+from .models import Client
 
-class BaseUserAdmin(admin.ModelAdmin):
+class ClientAdmin(admin.ModelAdmin):
     fieldsets = (
         ("Dados de Cadastro" , {
             'fields': ('username', 'password','email'),
@@ -21,4 +21,4 @@ class BaseUserAdmin(admin.ModelAdmin):
     search_fields =('id', 'first_name', 'last_name', 'email', 'phone_number')
 
 
-admin.site.register(BaseUser, BaseUserAdmin)
+admin.site.register(Client, ClientAdmin)

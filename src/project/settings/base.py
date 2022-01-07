@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django_filters',
     'social_django',
     # Meus apps
+    'core.core_auth',
     'core.core_config',
     'products',
     'project_auth',
@@ -115,7 +116,7 @@ INTERNAL_IPS = [
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
-AUTH_USER_MODEL = "auth.User"
+AUTH_USER_MODEL = "core_auth.CoreUser"
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -257,8 +258,10 @@ JAZZMIN_SETTINGS = {
         "products.Category": "fas fa-tag",
         "products.Products": "fas fa-box",
         "products.SubCategory": "fas fa-tags",
-        "project_auth.BaseUser" :"fas fa-user-circle",
-        "core_config.ConfigApp" : "fas fa-cogs"
+        "project_auth.Client" :"fas fa-user-circle",
+        "core_config.ConfigApp" : "fas fa-cogs",
+        "core_auth.CoreUser": "fas fa-address-card"
+        
     },
     
 }

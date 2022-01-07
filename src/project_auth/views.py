@@ -1,6 +1,6 @@
-from .models import BaseUser
+from .models import Client
 from products.models import Category
-from .serializers import BaseUserSerializer
+from .serializers import ClientSerializer
 
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
@@ -13,15 +13,13 @@ from .services import password_check
 
 
 class Register(generics.GenericAPIView):
-    queryset= BaseUser.objects.all()
-    serializer_class=BaseUserSerializer
+    queryset= Client.objects.all()
+    serializer_class=ClientSerializer
     permission_classes=[AllowAny]
 
     def get(self, request):
 
-
         queryset = Category.objects.all()
-
         pass
     
     def post(self, request):
@@ -32,7 +30,7 @@ class Register(generics.GenericAPIView):
         if not username:
             error.append('Usuário necessário')
         else :
-            user = BaseUser.objects.filter(username=username)
+            user = Client.objects.filter(username=username)
             if user:
                 error.append('Usuário já cadastrado')
 
@@ -40,7 +38,7 @@ class Register(generics.GenericAPIView):
         if not email :
             error.append('Email required')
         else :
-            user_email = BaseUser.objects.filter(email=email)
+            user_email = Client.objects.filter(email=email)
             if user_email :
                 error.append('Email já cadastrado')
 
@@ -52,16 +50,18 @@ class Register(generics.GenericAPIView):
 
         first_name = request.data.get('first_name')
         if not first_name :
-            error.append('First name required')
+            error.append('Primeiro nome é necessário')
 
         last_name = request.data.get('last_name')
         if not last_name :
-            error.append('Last name required')        
+            error.append('Último nome é necessário')        
 
-        categories = request.data.get('categories')
-        categories = list(map(int, categories.split(',')))
-        
-        cat = list(Category.objects.filter(id__in=categories).values_list('id', flat=True))        
+        categories = request.data.get('categories', None)
+        if categories :
+
+            categories = list(map(int, categories.split(',')))            
+            cat = list(Category.objects.filter(id__in=categories).values_list('id', flat=True))        
+
         if cat :
             for el in cat :
                 if el in categories :
@@ -81,7 +81,7 @@ class Register(generics.GenericAPIView):
         if not error :
 
             try:
-                user = BaseUser.objects.create(
+                user = Client.objects.create(
                 username=username,
                 password=password,
                 email=email,
@@ -95,11 +95,11 @@ class Register(generics.GenericAPIView):
                 if image :                    
                     user.image = image
                     
-                user.save()
-
                 if categories:
                     for elem in categories:
                         user.categories.add(Category.objects.get(id=elem))
+                user.save()
+
 
                 if user :
                     return JsonResponse({"success":True}, status=status.HTTP_201_CREATED)
@@ -107,7 +107,7 @@ class Register(generics.GenericAPIView):
             except Exception as e :
 
                 print(e)
-                user = BaseUser.objects.filter(username=username)
+                user = Client.objects.filter(username=username)
                 if user :                    
                     user.delete()    
                 error.append('Erro desconhecido')

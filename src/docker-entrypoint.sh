@@ -18,3 +18,4 @@ done
 # Start Server
 echo ">>>>>>> Starting server <<<<<<<<"
 python manage.py runserver 0.0.0.0:${PORT}
+# exec gunicorn $PROJECT_WSGI_MODULE:application -w 2 -b 0.0.0.0:$PORT --name "$COMPOSE_PROJECT_NAME"

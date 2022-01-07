@@ -1,7 +1,7 @@
 from django.db import models
 
 from autoslug import AutoSlugField
-from project_auth.models import BaseUser
+from project_auth.models import Client
 
 class Category(models.Model):
 
@@ -54,7 +54,7 @@ class Products(models.Model):
     stock = models.PositiveIntegerField("Quantidade em estoque", default=1)
     available = models.BooleanField("Disponível",default=True)    
     sub_category = models.ForeignKey(SubCategory, verbose_name="Sub-Categoria", on_delete=models.CASCADE, default=None)
-    owner = models.ForeignKey(BaseUser, verbose_name="Dono", on_delete=models.CASCADE, default=None) 
+    owner = models.ForeignKey(Client, verbose_name="Dono", on_delete=models.CASCADE, default=None) 
     created = models.DateTimeField("Data criação",auto_now_add=True)
     updated = models.DateTimeField("Atualização",auto_now=True)
 
