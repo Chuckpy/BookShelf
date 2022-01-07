@@ -32,6 +32,8 @@ Caso você não tenha o repositório em seu computador, basta clona-lo na pasta 
 git clone https://github.com/Chuckpy/book.git
 ```
 
+Com o repositório em seu computador, você precisa incluir na pasta as suas variaveis de ambiente, existe nesse repositório um arquivo de "exemplo" que pode ser usado da primeira vez que o sistema for usado. Porém para ser reconhecido como variável de ambiente, ele precisa ter o nome alterado para '.env', ***não se esqueça disso***.
+
 Feito isso, basta acessar contruir os container com o docker-compose:
 
 ```bash

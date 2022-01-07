@@ -1,0 +1,15 @@
+## Project
+PORT=8000
+
+# DJANGO SETTINGS
+DJANGO_SETTINGS_MODULE=project.settings.base
+REQUIREMENTS=requirements/base.txt
+
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+DB_PORT=5432
+
+ALLOWED_HOSTS=localhost
+
+# Docker containers
+COMPOSE_PROJECT_NAME=book_shelf             
