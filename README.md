@@ -24,6 +24,10 @@ O projeto  tem como objetivo ser uma aplicação para gestão de produtos, venda
 
 O projeto iniciou sendo uma maneira de estudos, e hoje esta tomando novas proporções, por isso esta sendo revisto as bases e refatorado para que possa ser usado em diferentes plataformas, por isso ***não esta em processo de produção***
 
+## Visualizando
+
+![Pré visualização do painel administrativo](./doc/preview/admin.png)
+
 ## Como Inicializar
 
 Caso você não tenha o repositório em seu computador, basta clona-lo na pasta que deseja :
