@@ -56,20 +56,23 @@ class Register(generics.GenericAPIView):
         if not last_name :
             error.append('Último nome é necessário')        
 
-        categories = request.data.get('categories', None)
+        categories = request.data.get('categories')
         if categories :
-            categories = list(map(int, categories.split(',')))            
-            cat = list(Category.objects.filter(id__in=categories).values_list('id', flat=True))        
-
-        if cat :
-            for el in cat :
+            categories = list(map(int, categories.split(',')))  
+            list_cat = list(Category.objects.filter(id__in=categories).values_list('id', flat=True))
+        
+        categories_out = []
+        if list_cat :
+            for el in list_cat :
                 if el in categories :
+                    categories_out.append(el)
                     categories.remove(el)
 
         if categories :
             for el in categories :
                 error.append(f'Categoria {el} não existe')
 
+        
         image = request.FILES.get('image')
         
         city = request.data.get('city',None)
@@ -94,8 +97,8 @@ class Register(generics.GenericAPIView):
                 if image :                    
                     user.image = image
                     
-                if categories:
-                    for elem in categories:
+                if categories_out:
+                    for elem in categories_out:
                         user.categories.add(Category.objects.get(id=elem))
                 user.save()
 
