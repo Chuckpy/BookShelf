@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_filters',
     'social_django',
+    'django_celery_results',
+    'django_celery_beat',
     # Meus apps
     'core.core_auth',
     'core.core_config',
@@ -201,6 +203,21 @@ AUTHENTICATION_BACKENDS = (
    'django.contrib.auth.backends.ModelBackend',
 )
 
+
+# Celery Configuration Options
+
+
+## Broker settings.
+
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
+broker_url = f'amqp://admin:admin//localhost'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'America/Bahia'
+
+
 # Jazzmin admin template Configs : 
 
 JAZZMIN_SETTINGS = {
@@ -216,7 +233,7 @@ JAZZMIN_SETTINGS = {
     # Copyright on the footer
     "copyright": "Solvum Ltd",
     # The model admin to search from the search bar, search bar omitted if excluded
-    "search_model": "auth.User", 
+    "search_model": "project_auth.Client", 
     
     # Logo to use for your site, must be present in static files, used for brand on top left
     "site_logo": "image/book.png",
@@ -229,9 +246,6 @@ JAZZMIN_SETTINGS = {
         # external url that opens in a new window (Permissions can be added)
         {"name": "Suporte", "url": "https://github.com/Chuckpy/BookShelf/issues", "new_window": True},
         {"name": "Código Fonte", "url": "https://github.com/Chuckpy/BookShelf", "new_window": True},
-
-        # model admin to link to (Permissions checked against model)
-        {"model": "auth.User"},
 
         # App with dropdown menu to all its models pages (Permissions checked against models)
         {"app": "products"},
@@ -260,9 +274,11 @@ JAZZMIN_SETTINGS = {
         "products.SubCategory": "fas fa-tags",
         "project_auth.Client" :"fas fa-user-circle",
         "core_config.ConfigApp" : "fas fa-cogs",
-        "core_auth.CoreUser": "fas fa-address-card"
-        
+        "core_auth.CoreUser": "fas fa-address-card",
+        "django_celery_results" : "fas fa-history"        
     },
+
+    "default_icon_children": "fas fa-stop-circle",
     
 }
 

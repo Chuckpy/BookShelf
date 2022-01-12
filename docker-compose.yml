@@ -1,13 +1,14 @@
 version: "3.8"
 
 services:
-  
+
   web:    
     build: ./src
     ports:
       - "${PORT}:${PORT}"
     depends_on:
       - db
+      - rabbit
     tty: true    
     stdin_open: true
     container_name: ${COMPOSE_PROJECT_NAME}_app
@@ -15,6 +16,7 @@ services:
       - ${PORT}
     links:
       - db
+      - rabbit
     env_file:
       - .env
     restart: unless-stopped
@@ -31,6 +33,20 @@ services:
           - "5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-          
+
+  rabbit:
+    container_name: rabbit
+    image: rabbitmq:3.9.12-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
+    volumes: 
+      - ./data:/var/lib/rabbitmq/
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+      - RABBIT_URL=rabbit
+
 volumes:
   postgres_data:
