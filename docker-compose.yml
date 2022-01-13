@@ -36,11 +36,13 @@ services:
 
   rabbit:
     container_name: rabbit
+    networks:
+      - main
     image: rabbitmq:3.9.12-management
     ports:
       - "5672:5672"
       - "15672:15672"
-    restart: always
+    restart: on-failure
     volumes: 
       - ./data:/var/lib/rabbitmq/
     environment:
@@ -50,3 +52,6 @@ services:
 
 volumes:
   postgres_data:
+
+networks:
+  main:
