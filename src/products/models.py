@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 from autoslug import AutoSlugField
 from project_auth.models import Client
@@ -16,10 +18,6 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-    def cat_queryset(self):
-        #TODO
-        pass
-        
 
 class SubCategory(models.Model):
 
@@ -90,4 +88,11 @@ class ProductImages(models.Model):
     
     def owner(self):
         return self.product.owner
-        
+
+
+@receiver(pre_save, sender = Category)
+def handler(sender, *args, **kwargs):
+    lista = ['Teste', 'Test', 'test', 'teste']
+    instance = kwargs.get('instance')
+    if instance.name in lista :
+        raise NameError("Object name can generate redundancy")

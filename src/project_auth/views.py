@@ -13,14 +13,6 @@ from .services import password_check
 
 
 class Register(generics.GenericAPIView):
-    queryset= Client.objects.all()
-    serializer_class=ClientSerializer
-    permission_classes=[AllowAny]
-
-    def get(self, request):
-
-        queryset = Category.objects.all()
-        pass
     
     def post(self, request):
         
@@ -36,7 +28,7 @@ class Register(generics.GenericAPIView):
 
         email = request.data.get('email')
         if not email :
-            error.append('Email required')
+            error.append('Email necessário')
         else :
             user_email = Client.objects.filter(email=email)
             if user_email :
@@ -69,8 +61,8 @@ class Register(generics.GenericAPIView):
                     categories.remove(el)
 
         if categories :
-            for el in categories :
-                error.append(f'Categoria {el} não existe')
+            for categ in categories :
+                error.append(f'Categoria {categ} não existe')
 
         
         image = request.FILES.get('image')
@@ -102,7 +94,6 @@ class Register(generics.GenericAPIView):
                         user.categories.add(Category.objects.get(id=elem))
                 user.save()
 
-
                 if user :
                     return JsonResponse({"success":True}, status=status.HTTP_201_CREATED)
                 
@@ -110,8 +101,8 @@ class Register(generics.GenericAPIView):
 
                 print(e)
                 user = Client.objects.filter(username=username)
-                if user :                    
-                    user.delete()    
+                if user :
+                    user.delete()
                 error.append('Erro desconhecido')
 
         return JsonResponse({"success":False, 'errors':error}, status=status.HTTP_400_BAD_REQUEST)
