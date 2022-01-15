@@ -18,12 +18,13 @@ class ImageInLine(admin.TabularInline):
 class TagAdmin(admin.ModelAdmin):
     fields=("name",)
     list_display = ('name','registration')
+    list_filter=('registration', 'update')
 
 
 class ProductsAdmin(admin.ModelAdmin):
     
     fieldsets = (
-        ("Principal",{
+        ("Principal",{            
             'fields': ('name','short_description')
         }),
         ("Definição",{
@@ -33,11 +34,11 @@ class ProductsAdmin(admin.ModelAdmin):
             'fields': ('description', 'product_information', 'stock', 'owner')
         }),        
     )
-    list_display= ('name', 'owner','get_category','sub_category','created')
+    list_display= ('name', 'dono','categoria','sub_category','created')
     list_filter = (
         ('created', DateRangeFilter), ('updated', DateRangeFilter), 'sub_category', 'sub_category__category'
     )
-    search_fields=('id','name','owner__first_name')
+    search_fields=('id','name','owner__first_name','owner_username')
 
     inlines = [   
         ImageInLine,

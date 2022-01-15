@@ -81,8 +81,11 @@ class Products(BaseMixin):
     def __str__(self):
         return self.name
 
-    def get_category(self):        
+    def categoria(self):        
         return self.sub_category.category
+
+    def dono(self):
+        return self.owner.username
 
     def get_images(self):
         return ProductImages.objects.filter(product=self.id)

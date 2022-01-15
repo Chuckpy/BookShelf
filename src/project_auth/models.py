@@ -9,7 +9,6 @@ from io import BytesIO
 from PIL import Image, ImageOps
 
 
-DEFAULT_INITIAL_RANK_ID=1
 
 
 def upload_perfil_user(instance, filename):
@@ -33,6 +32,7 @@ class Rank(BaseMixin):
         return f"{self.name}"
 
 
+DEFAULT_RANK_ID=1
 
 class Client(CoreUser, AddressMixin):
 
@@ -40,11 +40,11 @@ class Client(CoreUser, AddressMixin):
     phone_number = models.CharField("Número de telefone",max_length=20, null=True, blank=True)
     bio = models.TextField(null=True, blank=True, max_length=2000)
     categories = models.ManyToManyField('products.Category',blank=True, verbose_name="Categorias Preferidas")
-    rank = models.ForeignKey(Rank, related_name="rank_of", on_delete=models.CASCADE, default=DEFAULT_INITIAL_RANK_ID)
+    rank = models.ForeignKey(Rank, related_name="rank_of", on_delete=models.CASCADE, default=DEFAULT_RANK_ID)
     experience = models.IntegerField(default=0, blank=False,
                                     validators=[
-                                    MaxValueValidator(9999999999999999, message="Você extrapolou o limite negativamente"),
-                                    MinValueValidator(limit_value=-10000, message="Você extrapolou o limite positivamente")])
+                                    MaxValueValidator(9999999999999999, message="Você extrapolou o limite positivamente"),
+                                    MinValueValidator(limit_value=-10000, message="Você extrapolou o limite negativamente")])
 
     class Meta:
         verbose_name = 'Cliente'
