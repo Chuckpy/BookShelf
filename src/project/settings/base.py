@@ -255,13 +255,14 @@ JAZZMIN_SETTINGS = {
         "auth": "fas fa-users-cog",
         "auth.user": "fas fa-user",
         "auth.Group": "fas fa-users",
-        "products.Category": "fas fa-tag",
-        "products.Products": "fas fa-box",
-        "products.SubCategory": "fas fa-tags",
+        "products.Category": "fas fa-list",
+        "products.SubCategory": "fas fa-archive",
+        "products.Products": "fas fa-box-open",
+        "products.Tag": "fas fa-tag",        
         "project_auth.Client" :"fas fa-user-circle",
+        "project_auth.Rank" :"fas fa-chess-queen",
         "core_config.ConfigApp" : "fas fa-cogs",
-        "core_auth.CoreUser": "fas fa-address-card"
-        
+        "core_auth.CoreUser": "fas fa-address-card"        
     },
     
 }

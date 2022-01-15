@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Client
+from .models import Client, Rank
 
 class ClientAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -14,6 +14,9 @@ class ClientAdmin(admin.ModelAdmin):
         }),        
         ("Seleção de Preferências", {
             'fields':('categories',)
+        }),
+        ("Rank", {
+            'fields':('rank', 'experience')
         })
     )
     
@@ -21,4 +24,14 @@ class ClientAdmin(admin.ModelAdmin):
     search_fields =('id', 'first_name', 'last_name', 'email')
 
 
+class RankAdmin(admin.ModelAdmin):
+    fieldsets = (
+        ("Principal", {
+            'fields': ("name", "image")
+        }),
+    )
+    list_display = ('name', 'registration', 'active')
+    
+
 admin.site.register(Client, ClientAdmin)
+admin.site.register(Rank, RankAdmin)

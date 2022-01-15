@@ -4,7 +4,7 @@ from django.urls import path, include
 
 router = routers.DefaultRouter()
 
-router.register(r'register', Register)
+# router.register(r'register', Register)
 
 urlpatterns = [
     # path('api/', include(router.urls)),

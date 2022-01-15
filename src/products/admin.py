@@ -6,12 +6,18 @@ from .models import (
     SubCategory,
     Products, 
     ProductImages,
+    Tag
     )
 
 # Imagem do Produto Inline
 class ImageInLine(admin.TabularInline):   
     fields = ('image',) 
     model = ProductImages
+
+
+class TagAdmin(admin.ModelAdmin):
+    fields=("name",)
+    list_display = ('name','registration')
 
 
 class ProductsAdmin(admin.ModelAdmin):
@@ -21,7 +27,7 @@ class ProductsAdmin(admin.ModelAdmin):
             'fields': ('name','short_description')
         }),
         ("Definição",{
-            'fields' :('sub_category',)
+            'fields' :('sub_category','tags')
         }),
         ("Sobre", {
             'fields': ('description', 'product_information', 'stock', 'owner')
@@ -56,3 +62,4 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(SubCategory, SubCategoryAdmin)
 admin.site.register(Products, ProductsAdmin)
 admin.site.register(ProductImages, ProductImagesAdmin)
+admin.site.register(Tag, TagAdmin)

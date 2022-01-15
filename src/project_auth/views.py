@@ -48,7 +48,8 @@ class Register(generics.GenericAPIView):
         if not last_name :
             error.append('Último nome é necessário')        
 
-        categories = request.data.get('categories')
+        categories = request.data.get('categories', None)
+        list_cat=[]
         if categories :
             categories = list(map(int, categories.split(',')))  
             list_cat = list(Category.objects.filter(id__in=categories).values_list('id', flat=True))
@@ -63,7 +64,6 @@ class Register(generics.GenericAPIView):
         if categories :
             for categ in categories :
                 error.append(f'Categoria {categ} não existe')
-
         
         image = request.FILES.get('image')
         

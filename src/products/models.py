@@ -1,11 +1,17 @@
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.core.files import File
+
+from core.utils.mixins.base import BaseMixin
 
 from autoslug import AutoSlugField
 from project_auth.models import Client
 
-class Category(models.Model):
+from io import BytesIO
+from PIL import Image, ImageOps
+
+class Category(BaseMixin):
 
     name = models.CharField(max_length=100)
     slug = AutoSlugField(unique=True, always_update=False, populate_from ='name')    
@@ -19,7 +25,7 @@ class Category(models.Model):
         return self.name
 
 
-class SubCategory(models.Model):
+class SubCategory(BaseMixin):
 
     category = models.ForeignKey(Category, verbose_name="Categoria-Raiz", on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
@@ -34,10 +40,22 @@ class SubCategory(models.Model):
         return self.name
 
 
-class Products(models.Model): 
+class Tag(BaseMixin):
+    name = models.CharField(verbose_name="Nome",max_length=150)
+    slug = AutoSlugField(unique=True, always_update=False, populate_from ='name')
+    class Meta :
+        verbose_name = "Tag"
+        verbose_name_plural = "Tag's"
+
+    def __str__(self):
+        return f"#{self.name}"
+
+
+class Products(BaseMixin): 
 
     name = models.CharField("Nome",max_length=130)
     slug = AutoSlugField(unique=True, always_update=False, populate_from ='name')
+    tags = models.ManyToManyField(Tag, blank=True)
     description = models.TextField(
             "Descrição",
             help_text="Fale brevemente sobre o produto e suas caracteristicas mais importantes",
@@ -74,7 +92,7 @@ class Products(models.Model):
 def upload_product(instance, filename):
     return f"product_images/{instance.product.name}/{filename}"
 
-class ProductImages(models.Model):
+class ProductImages(BaseMixin):
 
     product = models.ForeignKey(Products, default=None, related_name="images", on_delete=models.CASCADE)
     image = models.ImageField("Imagem",upload_to=upload_product, blank=True)
@@ -85,9 +103,27 @@ class ProductImages(models.Model):
 
     def __str__(self):        
         return f"{self.product.slug}"
-    
+
     def owner(self):
         return self.product.owner
+        
+    def save(self, *args, **kwargs):
+    
+        if self.image.name != 'default_profile.jpg' :
+
+            try :
+                im = Image.open(self.image)
+                im = im.convert('RGB')
+                im = ImageOps.exif_transpose(im)      
+                im_io = BytesIO() 
+                im.save(im_io, 'JPEG', quality=95)
+                self.image = File(im_io, f'{self.product.name}-{self.owner.username}')
+
+            except Exception as e :
+                print(e)
+      
+        super().save(*args, **kwargs)
+    
 
 
 @receiver(pre_save, sender = Category)
