@@ -1,7 +1,7 @@
 from django.db import models
 
 from core.utils.mixins.base import BaseMixin
-
+from ranking.models import Rank
 class ConfigApp(BaseMixin):
 
     class Meta :
@@ -31,8 +31,13 @@ class ConfigApp(BaseMixin):
                    "(Resolução 32x32 px em formato .png)"),
         null=True, blank=True, upload_to="uploads/config/img/"
     )
+    default_rank = models.ForeignKey(Rank, verbose_name="Ranking Inicial",
+                                    help_text="O cliente recebe esse ranking no cadastro (Importante existir)",
+                                    on_delete=models.CASCADE, blank=True, null=True)
+
+
     def __str__(self):
-        return self.short_name
+        return self.name
 
     
     def save(self, *args, **kwargs):

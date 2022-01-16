@@ -2,37 +2,20 @@ from django.db import models
 from django.core.files import File
 from django.core.validators  import MaxValueValidator, MinValueValidator
 from core.utils.mixins.address import AddressMixin
-from core.utils.mixins.base import BaseMixin
 from core.core_auth.models import CoreUser
+from core.core_config.models import ConfigApp
 
 from io import BytesIO
 from PIL import Image, ImageOps
 
-
-
+from ranking.models import Rank
 
 def upload_perfil_user(instance, filename):
     return f"profile_photos/{instance.username}/{filename}"
 
 
-def upload_rank_images(instance,filename):
-    return f"rank_images/{filename}"
-
-class Rank(BaseMixin):
-
-    name = models.CharField(max_length=100)
-    image = models.ImageField(verbose_name="Imagem do Rank", upload_to=upload_rank_images,
-    help_text="É importante que a imagem seja em PNG")
-
-    class Meta:
-        verbose_name = 'Rank'
-        verbose_name_plural = 'Ranks'
-
-    def __str__(self):
-        return f"{self.name}"
-
-
-DEFAULT_RANK_ID=1
+config = ConfigApp.objects.filter(active=True).last()
+DEFAULT_RANK=config.default_rank.id
 
 class Client(CoreUser, AddressMixin):
 
@@ -40,7 +23,7 @@ class Client(CoreUser, AddressMixin):
     phone_number = models.CharField("Número de telefone",max_length=20, null=True, blank=True)
     bio = models.TextField(null=True, blank=True, max_length=2000)
     categories = models.ManyToManyField('products.Category',blank=True, verbose_name="Categorias Preferidas")
-    rank = models.ForeignKey(Rank, related_name="rank_of", on_delete=models.CASCADE, default=DEFAULT_RANK_ID)
+    rank = models.ForeignKey(Rank, related_name="rank_of", on_delete=models.CASCADE, default=DEFAULT_RANK)
     experience = models.IntegerField(default=0, blank=False,
                                     validators=[
                                     MaxValueValidator(9999999999999999, message="Você extrapolou o limite positivamente"),

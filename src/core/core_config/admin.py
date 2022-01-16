@@ -10,7 +10,11 @@ class ConfigAppAdmin(admin.ModelAdmin):
         }),
         ("Descrição",{
             'fields' :('favicon','subtitle')
-        }),        
+        }),
+        ("Rankeamento",{
+            'fields':('default_rank',)
+        })        
     )
+    list_display = ('name', 'short_name', 'registration')
 
 admin.site.register(ConfigApp, ConfigAppAdmin)
