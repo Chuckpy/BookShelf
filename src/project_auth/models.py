@@ -17,6 +17,16 @@ def upload_perfil_user(instance, filename):
 config = ConfigApp.objects.filter(active=True).last()
 DEFAULT_RANK=config.default_rank.id
 
+'''
+ ```Regra de ranqueamento```
+tupla contendo o valor entre qual numero de exp é o rank de cada usuário
+'''
+level_rank = (
+    ( (0,1000), DEFAULT_RANK),    
+    ( (1000,2000) , DEFAULT_RANK+1),
+    ( (2000,3000) , DEFAULT_RANK+2),
+)
+
 class Client(CoreUser, AddressMixin):
 
     image = models.ImageField(verbose_name="Imagem de Perfil", default="default_profile.jpeg", upload_to=upload_perfil_user)
@@ -35,7 +45,7 @@ class Client(CoreUser, AddressMixin):
 
 
     def __str__(self):
-        return f"{self.id}-{self.username}"
+        return f"{self.username}"
 
 
     def save(self, *args, **kwargs):
@@ -52,8 +62,16 @@ class Client(CoreUser, AddressMixin):
 
             except Exception as e :
                 print(e)        
-            
-        # TODO change of rank based in the experience
+
+        try:
+
+            for el in level_rank :
+                if (self.experience >= el[0][0]) and (self.experience < el[0][1]):
+                    self.rank = Rank.objects.get(id=el[1])
+
+        except Exception as e :
+            print(e)
+                
 
         super().save(*args, **kwargs)
 

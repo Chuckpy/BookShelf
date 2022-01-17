@@ -19,7 +19,7 @@ class ClientAdmin(admin.ModelAdmin):
             'fields':('rank', 'experience')
         })
     )
-    
+    # readonly_fields = ["experience"]
     list_display = ('username', 'email', 'first_name', 'phone_number')
     search_fields =('id', 'first_name', 'last_name', 'email')
 
