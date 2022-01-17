@@ -20,6 +20,10 @@ DEFAULT_RANK=config.default_rank.id
 '''
  ```Regra de ranqueamento```
 tupla contendo o valor entre qual numero de exp é o rank de cada usuário
+ex : (
+    ( (1,2), Rank.object.get(id=1) ),
+    ( (2,3), Rank.object.get(id=2) )
+)
 '''
 level_rank = (
     ( (0,1000), DEFAULT_RANK),    
