@@ -92,6 +92,17 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 ASGI_APPLICATION = "project.asgi.application"
 
+cache_dns_name = env("COMPOSE_PROJECT_NAME")
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [(f'{cache_dns_name}_cache', 6379)],
+        },
+    },
+}
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 

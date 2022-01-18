@@ -9,6 +9,7 @@ services:
       - "${PORT}:${PORT}"
     depends_on:
       - db
+      - cache
     tty: true    
     stdin_open: true
     container_name: ${COMPOSE_PROJECT_NAME}_app
@@ -16,6 +17,7 @@ services:
       - ${PORT}
     links:
       - db
+      - cache
     env_file:
       - .env
     restart: unless-stopped
@@ -41,6 +43,8 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}_cache
     networks:
         - default
+    ports:
+     - "6379:6379"
 
 
 volumes:
