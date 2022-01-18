@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Client, Rank
+from .models import Client
 
 class ClientAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -34,4 +34,3 @@ class RankAdmin(admin.ModelAdmin):
     
 
 admin.site.register(Client, ClientAdmin)
-admin.site.register(Rank, RankAdmin)
