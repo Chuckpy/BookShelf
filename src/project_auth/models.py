@@ -36,7 +36,7 @@ try :
         )
 
 except Exception as e :
-    print(e)
+    print("Configuração inicial é necessária \n"+e)
     pass
 
 class Client(CoreUser, AddressMixin):
@@ -83,7 +83,8 @@ class Client(CoreUser, AddressMixin):
 
         except Exception as e :
             print(e)
-                
+        
+            
 
         super().save(*args, **kwargs)
 

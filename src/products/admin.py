@@ -38,7 +38,7 @@ class ProductsAdmin(admin.ModelAdmin):
     list_filter = (
         ('registration', DateRangeFilter), ('updated', DateRangeFilter), 'sub_category', 'sub_category__category'
     )
-    search_fields=('id','name','owner__first_name','owner_username')
+    search_fields=('name','owner__first_name','owner_username')
 
     inlines = [   
         ImageInLine,

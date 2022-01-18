@@ -54,7 +54,7 @@ class Tag(BaseMixin):
 
 
 class Products(BaseMixin): 
-    uuid = UUIDField(primary_key=True, version=4, editable=False)
+    id = UUIDField(primary_key=True, version=4, editable=False)
     name = models.CharField("Nome",max_length=130)
     slug = AutoSlugField(unique=True, always_update=False, populate_from ='name')
     tags = models.ManyToManyField(Tag, blank=True)
