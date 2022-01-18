@@ -10,7 +10,7 @@ class CoreUser(AbstractUser):
         verbose_name_plural='Núcleos de Autenticação'
 
     REQUIRED_FIELDS = []
-
+ 
 
 class CoreStaff(CoreUser):
     class Meta:

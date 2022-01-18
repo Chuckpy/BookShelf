@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'products',
     'project_auth',
     'ranking',
+    'chat',
     # Apps terceiros
+    'channels',
     'rangefilter',
     'oauth2_provider',
     'debug_toolbar',
@@ -66,7 +68,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR +"/"+ "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -88,6 +90,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
+ASGI_APPLICATION = "project.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

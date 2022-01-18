@@ -12,6 +12,7 @@ from project_auth.models import Client
 from io import BytesIO
 from PIL import Image, ImageOps
 
+
 class Category(BaseMixin):
 
     name = models.CharField(max_length=100)

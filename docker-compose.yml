@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   
+
   web:    
     build: ./src
     ports:
@@ -21,6 +22,7 @@ services:
     volumes:
       - ./src:/code
 
+
   db:
     container_name: ${COMPOSE_PROJECT_NAME}_db
     image: postgres:14
@@ -31,6 +33,20 @@ services:
           - "5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+      
           
+  cache:
+    restart: unless-stopped
+    image: redis:6.0
+    container_name: ${COMPOSE_PROJECT_NAME}_cache
+    networks:
+        - default
+
+
 volumes:
   postgres_data:
+
+
+networks:
+    default:
+        name: ${COMPOSE_PROJECT_NAME}_default
