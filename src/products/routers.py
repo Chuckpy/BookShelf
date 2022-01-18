@@ -1,3 +1,4 @@
+from django.urls import include, path
 from rest_framework import routers
 from .views import (ProductList,
                     ProductCreate,
@@ -12,4 +13,6 @@ router.register(r"create", ProductCreate)
 router.register(r"update", ProductUpdate, basename="products-update")
 router.register(r"detail", ProductDetail, basename="products-detail")
 
-urlpatterns = router.urls
+urlpatterns = [
+    path(r"", include(router.urls))
+]

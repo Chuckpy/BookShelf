@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.core.files import File
+from rest_framework.reverse import reverse
 
 from core.utils.mixins.base import BaseMixin
 
@@ -89,6 +90,9 @@ class Products(BaseMixin):
 
     def get_images(self):
         return ProductImages.objects.filter(product=self.id)
+
+    def get_absolute_url(self):
+        return reverse("products-detail-detail", kwargs={"slug":self.slug})
 
 
 # String de caminho do arquivo
