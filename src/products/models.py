@@ -3,14 +3,15 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.core.files import File
 from rest_framework.reverse import reverse
+from model_utils.fields import UUIDField
+from io import BytesIO
+from PIL import Image, ImageOps
 
 from core.utils.mixins.base import BaseMixin
 
 from autoslug import AutoSlugField
 from project_auth.models import Client
 
-from io import BytesIO
-from PIL import Image, ImageOps
 
 class Category(BaseMixin):
 
@@ -53,7 +54,7 @@ class Tag(BaseMixin):
 
 
 class Products(BaseMixin): 
-
+    uuid = UUIDField(primary_key=True, version=4, editable=False)
     name = models.CharField("Nome",max_length=130)
     slug = AutoSlugField(unique=True, always_update=False, populate_from ='name')
     tags = models.ManyToManyField(Tag, blank=True)
@@ -72,9 +73,7 @@ class Products(BaseMixin):
     available = models.BooleanField("Disponível",default=True)    
     sub_category = models.ForeignKey(SubCategory, verbose_name="Sub-Categoria", on_delete=models.CASCADE, default=None)
     owner = models.ForeignKey(Client, verbose_name="Dono", on_delete=models.CASCADE, default=None) 
-    created = models.DateTimeField("Data criação",auto_now_add=True)
-    updated = models.DateTimeField("Atualização",auto_now=True)
-
+    
     class Meta: 
         verbose_name = "Produto"
         verbose_name_plural = "Produtos"

@@ -34,9 +34,9 @@ class ProductsAdmin(admin.ModelAdmin):
             'fields': ('description', 'product_information', 'stock', 'owner')
         }),        
     )
-    list_display= ('name', 'dono','categoria','sub_category','created')
+    list_display= ('name', 'dono','categoria','sub_category','registration')
     list_filter = (
-        ('created', DateRangeFilter), ('updated', DateRangeFilter), 'sub_category', 'sub_category__category'
+        ('registration', DateRangeFilter), ('updated', DateRangeFilter), 'sub_category', 'sub_category__category'
     )
     search_fields=('id','name','owner__first_name','owner_username')
 

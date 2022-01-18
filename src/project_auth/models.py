@@ -13,23 +13,31 @@ from ranking.models import Rank
 def upload_perfil_user(instance, filename):
     return f"profile_photos/{instance.username}/{filename}"
 
+DEFAULT_RANK=1
 
-config = ConfigApp.objects.filter(active=True).last()
-DEFAULT_RANK=config.default_rank.id
+try :
+    
+    config = ConfigApp.objects.filter(active=True).last()
+    if config :
+        DEFAULT_RANK=config.default_rank.id
 
-'''
-    ```Regra de ranqueamento```
-tupla contendo o valor entre qual numero de exp é o rank de cada usuário
-ex : (
-    ( (1,2), Rank.object.get(id=1) ),
-    ( (2,3), Rank.object.get(id=2) )
-)
-'''
-level_rank = (
-    ( (0,1000), DEFAULT_RANK),    
-    ( (1000,2000) , DEFAULT_RANK+1),
-    ( (2000,3000) , DEFAULT_RANK+2),
-)
+        '''
+            ```Regra de ranqueamento```
+        tupla contendo o valor entre qual numero de exp é o rank de cada usuário
+        ex : (
+            ( (1,2), Rank.object.get(id=1) ),
+            ( (2,3), Rank.object.get(id=2) )
+        )
+        '''
+        level_rank = (
+            ( (0,1000), DEFAULT_RANK),    
+            ( (1000,2000) , DEFAULT_RANK+1),
+            ( (2000,3000) , DEFAULT_RANK+2),
+        )
+
+except Exception as e :
+    print(e)
+    pass
 
 class Client(CoreUser, AddressMixin):
 
