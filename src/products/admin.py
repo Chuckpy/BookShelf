@@ -6,8 +6,27 @@ from .models import (
     SubCategory,
     Products, 
     ProductImages,
-    Tag
+    Tag,
+    Like,
+    Dislike,
+    OpenSearch
     )
+
+
+
+class OpenSearchAdmin(admin.ModelAdmin):
+    readonly_fields = ['own_product', 'active']
+    pass
+
+
+class LikeAdmin(admin.ModelAdmin):
+    pass
+
+
+class DislikeAdmin(admin.ModelAdmin):
+    pass
+
+
 
 # Imagem do Produto Inline
 class ImageInLine(admin.TabularInline):   
@@ -31,12 +50,12 @@ class ProductsAdmin(admin.ModelAdmin):
             'fields' :('sub_category','tags')
         }),
         ("Sobre", {
-            'fields': ('description', 'product_information', 'stock', 'owner')
+            'fields': ('description', 'product_information', 'stock', 'owner','search_bool')
         }),        
     )
     list_display= ('name', 'dono','categoria','sub_category','registration')
     list_filter = (
-        ('registration', DateRangeFilter), ('updated', DateRangeFilter), 'sub_category', 'sub_category__category'
+        ('registration', DateRangeFilter), ('update', DateRangeFilter), 'sub_category', 'sub_category__category'
     )
     search_fields=('name','owner__first_name','owner_username')
 
@@ -64,3 +83,6 @@ admin.site.register(SubCategory, SubCategoryAdmin)
 admin.site.register(Products, ProductsAdmin)
 admin.site.register(ProductImages, ProductImagesAdmin)
 admin.site.register(Tag, TagAdmin)
+admin.site.register(Like, LikeAdmin)
+admin.site.register(Dislike, DislikeAdmin)
+admin.site.register(OpenSearch, OpenSearchAdmin)
