@@ -42,7 +42,7 @@ Com o repositório em seu computador, você precisa incluir na pasta as suas var
 
 ### Modelo de Configuração Inicial
 
-O projeto foi desenvolvido de uma maneira que haja um modelo de configuração para o painel administativo, o modelo "[CoreConfig](/src/core/core_config/models)" é herdado por boa parte do projeto, como sendo uma configuração padrão. Uma, e apenas uma configuração deve ser mantida ativa, e por isso há um método singleton que impede que várias configurações existam simultâneamente. Caso o projeto esta sendo iniciado pela primeira vez agora, é preciso que em algumas partes do projeto ele seja omitido, ou explicitamente criado.
+O projeto foi desenvolvido de uma maneira que haja um modelo de configuração para o painel administativo, o modelo "[CoreConfig](/src/core/core_config/models.py)" é herdado por boa parte do projeto, como sendo uma configuração padrão. Uma, e apenas uma configuração deve ser mantida ativa, e por isso há um método singleton que impede que várias configurações existam simultâneamente. Caso o projeto esta sendo iniciado pela primeira vez agora, é preciso que em algumas partes do projeto ele seja omitido, ou explicitamente criado.
 
 ### Subindo os Contâiners
 
