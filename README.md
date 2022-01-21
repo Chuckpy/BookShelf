@@ -40,6 +40,12 @@ git clone https://github.com/Chuckpy/book.git
 
 Com o repositório em seu computador, você precisa incluir na pasta as suas variaveis de ambiente, existe nesse repositório um arquivo de exemplo (.env.example) que pode ser usado da primeira vez que o sistema for usado. Porém para ser reconhecido como variável de ambiente, ele precisa ter o nome alterado para '.env', ***não se esqueça disso***.
 
+### Modelo de Configuração Inicial
+
+O projeto foi desenvolvido de uma maneira que haja um modelo de configuração para o painel administativo, o modelo "[CoreConfig](/src/core/core_config/models)" é herdado por boa parte do projeto, como sendo uma configuração padrão. Uma, e apenas uma configuração deve ser mantida ativa, e por isso há um método singleton que impede que várias configurações existam simultâneamente. Caso o projeto esta sendo iniciado pela primeira vez agora, é preciso que em algumas partes do projeto ele seja omitido, ou explicitamente criado.
+
+### Subindo os Contâiners
+
 Feito isso, basta o docker para contruir os containers com o docker-compose:
 
 ```bash
