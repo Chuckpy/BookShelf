@@ -103,7 +103,6 @@ class Products(BaseMixin):
 
 
 
-
 class Like(BaseMixin):
 
     id = UUIDField(primary_key=True, version=4, editable=False)
