@@ -10,6 +10,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework import generics
 
 from .services import password_check
+from .tasks import create_random_user
 
 
 class Register(generics.GenericAPIView):
@@ -106,3 +107,16 @@ class Register(generics.GenericAPIView):
                 error.append('Erro desconhecido')
 
         return JsonResponse({"success":False, 'errors':error}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Celery(generics.GenericAPIView):
+    def post(self, request):
+        total = request.data.get('total')
+        try :
+            create_random_user.delay(total)
+            return JsonResponse({"success":True}, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            print(e)
+
+        return JsonResponse({"success":False}, status=status.HTTP_400_BAD_REQUEST)

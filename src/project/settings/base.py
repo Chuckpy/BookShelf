@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     'django_base64field',
     'django_extensions',
     'django_filters',
+    'django_celery_results',
+    'django_celery_beat',
     'social_django',
     # Meus apps
     'core.core_auth',
@@ -202,6 +204,26 @@ AUTHENTICATION_BACKENDS = (
    'django.contrib.auth.backends.ModelBackend',
 )
 
+
+#### Celery Configuration Options
+
+CELERY_BROKER_URL = 'redis://book_shelf_cache:6379'
+
+
+#### Django Celery Result options
+
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'default'
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+    }
+}
+
+
+
+
 # Jazzmin admin template Configs : 
 
 JAZZMIN_SETTINGS = {
@@ -267,7 +289,7 @@ JAZZMIN_SETTINGS = {
         "project_auth.Client" :"fas fa-user-circle",
         "ranking.Rank" :"fas fa-chess-queen",
         "core_config.ConfigApp" : "fas fa-cogs",
-        "core_auth.CoreUser": "fas fa-address-card"        
+        "core_auth.CoreUser": "fas fa-address-card",
     },
     
 }
