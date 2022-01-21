@@ -4,6 +4,7 @@ from django.core.validators  import MaxValueValidator, MinValueValidator
 from core.utils.mixins.address import AddressMixin
 from core.core_auth.models import CoreUser
 from core.core_config.models import ConfigApp
+from model_utils.fields import UUIDField
 
 from io import BytesIO
 from PIL import Image, ImageOps
@@ -13,26 +14,37 @@ from ranking.models import Rank
 def upload_perfil_user(instance, filename):
     return f"profile_photos/{instance.username}/{filename}"
 
+DEFAULT_RANK=1
 
-config = ConfigApp.objects.filter(active=True).last()
-DEFAULT_RANK=config.default_rank.id
 
 '''
-    ```Regra de ranqueamento```
+    Regra de ranqueamento
+    Necessário configuração inicial para iniciar o projeto
 tupla contendo o valor entre qual numero de exp é o rank de cada usuário
 ex : (
     ( (1,2), Rank.object.get(id=1) ),
     ( (2,3), Rank.object.get(id=2) )
 )
 '''
-level_rank = (
-    ( (0,1000), DEFAULT_RANK),    
-    ( (1000,2000) , DEFAULT_RANK+1),
-    ( (2000,3000) , DEFAULT_RANK+2),
-)
+try :
+    
+    config = ConfigApp.objects.filter(active=True).last()
+    if config :
+        DEFAULT_RANK=config.default_rank.id
+
+        level_rank = (
+            ( (0,1000), DEFAULT_RANK),    
+            ( (1000,2000) , DEFAULT_RANK+1),
+            ( (2000,3000) , DEFAULT_RANK+2),
+        )
+
+except Exception as e :
+    print("Configuração inicial é necessária \n"+e)
+    pass
 
 class Client(CoreUser, AddressMixin):
 
+    uuid = UUIDField(primary_key=True, version=4, editable=False)
     image = models.ImageField(verbose_name="Imagem de Perfil", default="default_profile.jpeg", upload_to=upload_perfil_user)
     phone_number = models.CharField("Número de telefone",max_length=20, null=True, blank=True)
     bio = models.TextField(null=True, blank=True, max_length=2000)
@@ -75,7 +87,8 @@ class Client(CoreUser, AddressMixin):
 
         except Exception as e :
             print(e)
-                
+        
+            
 
         super().save(*args, **kwargs)
 

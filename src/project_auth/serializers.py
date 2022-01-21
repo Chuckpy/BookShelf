@@ -5,5 +5,5 @@ class ClientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Client
-        fields = ('id', 'username','password', 'email','first_name',
+        fields = ('uuid', 'username','password', 'email','first_name',
          'last_name', 'city', 'state', 'neighborhood', 'street', 'categories')

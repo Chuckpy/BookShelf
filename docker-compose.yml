@@ -50,7 +50,6 @@ services:
 volumes:
   postgres_data:
 
-
 networks:
     default:
         name: ${COMPOSE_PROJECT_NAME}_default

@@ -8,9 +8,9 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta :
         model = Products
-        fields = ( 'name','slug', 'description', 'short_description', 
+        fields = ( 'id','name','slug', 'description', 'short_description', 
         'product_information', 'stock', 'available', 
-        'sub_category', 'owner', 'created', 'updated','links')
+        'sub_category', 'owner', 'registration', 'update','links')
     
     def get_links(self, obj):
         request = self.context['request']
