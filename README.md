@@ -2,7 +2,7 @@
 
 ## História e Objetivo
 
-O projeto  tem como objetivo ser uma aplicação para gestão de produtos, venda e compra de produtos e serviços, bem como a inteligência de armazenamento. A aplicação hoje é feito em Django e segue os principios [REST](https://pt.wikipedia.org/wiki/REST) para que possa ter um front-end agradável futuramente.
+O projeto  tem como objetivo ser uma aplicação para gestão de produtos, troca de produtos e serviços, bem como a inteligência de armazenamento. A aplicação hoje é feito em Django e segue os principios [REST](https://pt.wikipedia.org/wiki/REST) para que possa ter um front-end agradável futuramente.
 
 ## Principais Caracteristicas
 
@@ -15,8 +15,7 @@ O projeto  tem como objetivo ser uma aplicação para gestão de produtos, venda
 - Administração Personalizada (Filtros, Aparência, ações e etc personalizáveis)
 - Registro, organização e controle de armazenamento dos produtos
 - Registro e controle de serviços
-- Controle e registro de vendas de serviços e produtos (Por diversos tipos de usuários)
-- Controle e registro de compras de produtos (Somente com autorização prévia)
+- Controle e registro de trocas de produtos (Somente com autorização prévia)
 - Dashboard para controle e análise de dados
 - Controle de divulgação externa da plataforma
 
@@ -42,7 +41,12 @@ Com o repositório em seu computador, você precisa incluir na pasta as suas var
 
 ### Modelo de Configuração Inicial
 
-O projeto foi desenvolvido de uma maneira que haja um modelo de configuração para o painel administativo, o modelo "[CoreConfig](/src/core/core_config/models.py)" é herdado por boa parte do projeto, como sendo uma configuração padrão. Uma, e apenas uma configuração deve ser mantida ativa, e por isso há um método singleton que impede que várias configurações existam simultâneamente. Caso o projeto esta sendo iniciado pela primeira vez agora, é preciso que em algumas partes do projeto ele seja omitido, ou explicitamente criado.
+O projeto foi desenvolvido de uma maneira que haja um modelo de configuração para o painel administativo ter mais controle do projeto, o modelo "[ConfigApp](/src/core/core_config/models.py)" é injetado em boa parte do projeto, como sendo um maneira de configuração padrão do administrador do sistema. Uma, e apenas uma configuração deve ser mantida ativa, e por isso há um método singleton que impede que várias configurações existam simultâneamente. **Caso o projeto esta sendo iniciado pela primeira vez agora, é preciso que em algumas partes do projeto ele seja omitido, ou explicitamente criado**.
+
+#### Onde ele pode ser encontrado ?
+
+- ##### Project_auth
+  - ##### [models.py](/src/project_auth/models.py)
 
 ### Subindo os Contâiners
 
