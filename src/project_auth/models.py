@@ -3,7 +3,7 @@ from django.core.files import File
 from django.core.validators  import MaxValueValidator, MinValueValidator
 from core.utils.mixins.address import AddressMixin
 from core.core_auth.models import CoreUser
-from core.core_config.models import ConfigApp
+from core.utils.config import get_config
 from model_utils.fields import UUIDField
 
 from io import BytesIO
@@ -11,10 +11,13 @@ from PIL import Image, ImageOps
 
 from ranking.models import Rank
 
+
 def upload_perfil_user(instance, filename):
     return f"profile_photos/{instance.username}/{filename}"
 
-DEFAULT_RANK=1
+
+DEFAULT_RANK=None
+level_rank=None
 
 
 '''
@@ -26,21 +29,19 @@ ex : (
     ( (2,3), Rank.object.get(id=2) )
 )
 '''
-try :
-    
-    config = ConfigApp.objects.filter(active=True).last()
+try :    
+    config = get_config()
     if config :
         DEFAULT_RANK=config.default_rank.id
 
         level_rank = (
             ( (0,1000), DEFAULT_RANK),    
             ( (1000,2000) , DEFAULT_RANK+1),
-            ( (2000,3000) , DEFAULT_RANK+2),
         )
 
 except Exception as e :
-    print("Configuração inicial é necessária \n"+e)
-    pass
+    print("Configuração inicial é necessária \n "+e)
+    
 
 class Client(CoreUser, AddressMixin):
 
@@ -49,7 +50,7 @@ class Client(CoreUser, AddressMixin):
     phone_number = models.CharField("Número de telefone",max_length=20, null=True, blank=True)
     bio = models.TextField(null=True, blank=True, max_length=2000)
     categories = models.ManyToManyField('products.Category',blank=True, verbose_name="Categorias Preferidas")
-    rank = models.ForeignKey(Rank, related_name="rank_of", on_delete=models.CASCADE, default=DEFAULT_RANK)
+    rank = models.ForeignKey(Rank, related_name="rank_of", on_delete=models.CASCADE, default=DEFAULT_RANK, blank=True, null=True)
     experience = models.IntegerField(default=0, blank=False,
                                     validators=[
                                     MaxValueValidator(9999999999999999, message="Você extrapolou o limite positivamente"),
@@ -77,13 +78,14 @@ class Client(CoreUser, AddressMixin):
                 self.image = File(im_io, f'{self.username}_profile_picture')
 
             except Exception as e :
-                print(e)        
+                print(e)
 
         try:
-
-            for el in level_rank :
-                if (self.experience >= el[0][0]) and (self.experience < el[0][1]):
-                    self.rank = Rank.objects.get(id=el[1])
+            
+            if level_rank :                    
+                for el in level_rank :
+                    if (self.experience >= el[0][0]) and (self.experience < el[0][1]):
+                        self.rank = Rank.objects.get(id=el[1])
 
         except Exception as e :
             print(e)
