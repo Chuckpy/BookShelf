@@ -290,6 +290,11 @@ JAZZMIN_SETTINGS = {
         "ranking.Rank" :"fas fa-chess-queen",
         "core_config.ConfigApp" : "fas fa-cogs",
         "core_auth.CoreUser": "fas fa-address-card",
+        "django_celery_results.TaskResult":"fas fa-poll",
+        "django_celery_results.GroupResult":"fas fa-layer-group",
+        "django_celery_beat.PeriodicTask": "fas fa-tasks",
+        "django_celery_beat.IntervalSchedule": "fas fa-clock",
+        "django_celery_beat.CrontabSchedule": "fas fa-calendar-alt",
     },
     
 }

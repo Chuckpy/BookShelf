@@ -30,6 +30,6 @@ def create_random_user(total):
 
         i+=1
     
-    return f"Celery criou {total} de usuários"
+    return f"Celery criou {total} usuário(s)"
 
     
