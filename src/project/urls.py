@@ -10,7 +10,7 @@ urlpatterns = [
     path('auth/', include('rest_framework_social_oauth2.urls')),    
     path('products/', include('products.routers')),
     path('project_auth/', include('project_auth.routers')),
-    path('chat/', include('chat.urls')),
+    # path('chat/', include('chat.urls')),
 ]
 
 if settings.DEBUG:

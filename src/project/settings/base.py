@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'products',
     'project_auth',
     'ranking',
-    'chat',
+    # 'chat',
     # Apps terceiros
     'channels',
     'rangefilter',
