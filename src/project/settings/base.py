@@ -293,8 +293,10 @@ JAZZMIN_SETTINGS = {
         "django_celery_results.TaskResult":"fas fa-poll",
         "django_celery_results.GroupResult":"fas fa-layer-group",
         "django_celery_beat.PeriodicTask": "fas fa-tasks",
-        "django_celery_beat.IntervalSchedule": "fas fa-clock",
+        "django_celery_beat.IntervalSchedule": "fas fa-stopwatch",
         "django_celery_beat.CrontabSchedule": "fas fa-calendar-alt",
+        "django_celery_beat.SolarSchedule": "fas fa-globe-americas",
+        "django_celery_beat.ClockedSchedule": "fas fa-clock",
     },
     
 }
