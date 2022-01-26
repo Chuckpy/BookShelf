@@ -96,10 +96,12 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
+            "hosts": [('book_shelf_cache', 6379)],
         },
     },
 }
+
+# Chat config
 
 MESSAGES_TO_LOAD = 15
 
@@ -280,8 +282,9 @@ JAZZMIN_SETTINGS = {
         "products.OpenSearch" :"fas fa-search-plus",     
         "project_auth.Client" :"fas fa-user-circle",
         "ranking.Rank" :"fas fa-chess-queen",
+        "conversare.MessageModel":"far fa-comment",
         "core_config.ConfigApp" : "fas fa-cogs",
-        "core_auth.CoreUser": "fas fa-address-card"        
+        "core_auth.CoreUser": "fas fa-address-card",        
     },
     
 }
