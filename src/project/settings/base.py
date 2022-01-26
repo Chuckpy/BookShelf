@@ -36,10 +36,12 @@ INSTALLED_APPS = [
     # Meus apps
     'core.core_auth',
     'core.core_config',
+    'conversare',
     'products',
     'project_auth',
     'ranking',
     # Apps terceiros
+    'channels',
     'rangefilter',
     'oauth2_provider',
     'debug_toolbar',
@@ -66,7 +68,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR + '/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -88,6 +90,18 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
+ASGI_APPLICATION = 'project.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
+MESSAGES_TO_LOAD = 15
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
