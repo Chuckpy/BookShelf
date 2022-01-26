@@ -1,3 +1,8 @@
+.data-small{
+    font-size: 70%;
+    color: gray;
+}
+
 .titanic {
     float: none;
 }
