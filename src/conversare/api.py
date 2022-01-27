@@ -1,10 +1,12 @@
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.views.generic import TemplateView
 
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.authentication import SessionAuthentication
+
 
 from django.conf import settings
 from core.core_auth.models import CoreUser
@@ -66,3 +68,8 @@ class UserModelViewSet(ModelViewSet):
         # Get all users except yourself
         self.queryset = self.queryset.exclude(id=request.user.id)
         return super(UserModelViewSet, self).list(request, *args, **kwargs)
+
+
+class ChatView(TemplateView):
+    
+    template_name="conversare/core/chat.html"
