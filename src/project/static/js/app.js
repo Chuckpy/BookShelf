@@ -29,7 +29,7 @@ function drawMessage(message) {
                 <div class="avatar">${message.user}</div>
                     <div class="text_wrapper">
                         <div class="text">${message.body}<br>
-                            <span class="small">${date}</span>
+                            <span class="data-small">${date}</span>
                     </div>
                 </div>
             </li>`;
