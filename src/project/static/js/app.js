@@ -29,7 +29,7 @@ function drawMessage(message) {
                 <div class="avatar">${message.user}</div>
                     <div class="text_wrapper">
                         <div class="text">${message.body}<br>
-                            <span class="data-small">${date}</span>
+                            <span class="small">${date}</span>
                     </div>
                 </div>
             </li>`;
@@ -67,6 +67,11 @@ function sendMessage(recipient, body) {
     });
 }
 
+function getMessageConversation(recipient, body) {
+    sendMessage(recipient, body);
+    getConversation(recipient);
+}
+
 function setCurrentRecipient(username) {
     currentRecipient = username;
     getConversation(currentRecipient);
@@ -101,7 +106,7 @@ $(document).ready(function () {
 
     chatButton.click(function () {
         if (chatInput.val().length > 0) {
-            sendMessage(currentRecipient, chatInput.val());
+            getMessageConversation(currentRecipient, chatInput.val());
             chatInput.val('');
         }
     });
