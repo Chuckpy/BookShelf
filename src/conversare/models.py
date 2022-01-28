@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -35,22 +37,12 @@ class MessageModel(BaseMixin):
         }
 
         channel_layer = get_channel_layer()
-        print(f"user.id {self.user.id}")
-        print(f"user.id {self.recipient.id}")
+        # print(f"user.id {self.user.id}")
+        # print(f"user.id {self.recipient.id}")
 
-        async_to_sync(channel_layer.group_send)(f"{self.user.id}", notification)
+        async_to_sync(channel_layer.group_send)(f"{self.user.id}", notification)        
         async_to_sync(channel_layer.group_send)(f"{self.recipient.id}", notification)
 
-    def save(self, *args, **kwargs):
-        """
-        Trims white spaces, saves the message and notifies the recipient via WS
-        if the message is new.
-        """
-        new = self.id
-        self.body = self.body.strip()  # Trimming whitespaces from the body
-        super(MessageModel, self).save(*args, **kwargs)
-        if new is None:
-            self.notify_ws_clients()
 
     # Meta
     class Meta:
@@ -58,3 +50,12 @@ class MessageModel(BaseMixin):
         verbose_name = 'Mensagem'
         verbose_name_plural = 'Mensagens'
         ordering = ('-registration',)
+
+
+@receiver(pre_save, sender=MessageModel)
+def handler(sender, *args, **kwargs):
+
+    instance = kwargs.get('instance')    
+    if instance.id :
+        instance.body = instance.body.strip()
+        instance.notify_ws_clients()

@@ -1,5 +1,4 @@
 from django.urls import path, include
-from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 from rest_framework.routers import DefaultRouter
 from .api import MessageModelViewSet, UserModelViewSet, ChatView
