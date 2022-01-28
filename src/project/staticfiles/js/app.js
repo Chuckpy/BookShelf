@@ -67,10 +67,6 @@ function sendMessage(recipient, body) {
     });
 }
 
-function getMessageConversation(recipient, body) {
-    sendMessage(recipient, body);
-    getConversation(recipient);
-}
 
 function setCurrentRecipient(username) {
     currentRecipient = username;
@@ -106,7 +102,7 @@ $(document).ready(function () {
 
     chatButton.click(function () {
         if (chatInput.val().length > 0) {
-            getMessageConversation(currentRecipient, chatInput.val());
+            sendMessage(currentRecipient, chatInput.val());
             chatInput.val('');
         }
     });
