@@ -1,6 +1,6 @@
 from .models import Client
 from products.models import Category
-from .serializers import ClientSerializer
+# from .serializers import ClientSerializer
 
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password

@@ -1,5 +1,4 @@
 from __future__ import absolute_import, unicode_literals
-from typing import final
 
 from core.core_auth.models import CoreUser
 

@@ -6,12 +6,16 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.authentication import SessionAuthentication
+from rest_framework import generics
+from django.http import JsonResponse
+from rest_framework import status
 
 
 from django.conf import settings
 from core.core_auth.models import CoreUser
 from .serializers import MessageModelSerializer, UserModelSerializer
 from .models import MessageModel
+from .tasks import test_chat
 
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
@@ -73,3 +77,22 @@ class UserModelViewSet(ModelViewSet):
 class ChatView(TemplateView):
     
     template_name="conversare/core/chat.html"
+
+
+class CeleryTest(generics.GenericAPIView):
+    def post(self, request):
+
+        user = request.data.get('user')
+        recipient = request.data.get('recipient')
+        content = request.data.get('content')
+
+        try :
+            test_chat.delay(user, recipient, content)
+            return JsonResponse({'success': True, 'message': content}, status=status.HTTP_201_CREATED)
+        
+        except Exception as e :
+            print(e)
+        
+        return JsonResponse({"success":False}, status=status.HTTP_400_BAD_REQUEST)
+
+
