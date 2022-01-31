@@ -208,7 +208,6 @@ AUTHENTICATION_BACKENDS = (
 #### Celery Configuration Options
 
 CELERY_BROKER_URL = 'redis://book_shelf_cache:6379'
-CELERY_TIMEZONE = 'America/Bahia'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
