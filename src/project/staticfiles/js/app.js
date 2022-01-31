@@ -23,13 +23,16 @@ function updateUserList() {
 function drawMessage(message) {
     let position = 'left';
     const date = new Date(message.registration);
+    let hour = date.getHours()
+    let minutes = date.getMinutes()
+    
     if (message.user === currentUser) position = 'right';
     const messageItem = `
             <li class="message ${position}">
                 <div class="avatar">${message.user}</div>
                     <div class="text_wrapper">
                         <div class="text">${message.body}<br>
-                            <span class="data-small">${date}</span>
+                            <span class="data-small">${hour}:${minutes}<span>
                     </div>
                 </div>
             </li>`;
