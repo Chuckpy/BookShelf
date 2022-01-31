@@ -38,10 +38,12 @@ INSTALLED_APPS = [
     # Meus apps
     'core.core_auth',
     'core.core_config',
+    'conversare',
     'products',
     'project_auth',
     'ranking',
     # Apps terceiros
+    'channels',
     'rangefilter',
     'oauth2_provider',
     'debug_toolbar',
@@ -68,7 +70,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR + '/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -90,6 +92,20 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
+ASGI_APPLICATION = 'project.routing.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('book_shelf_cache', 6379)],
+        },
+    },
+}
+
+# Chat config
+
+MESSAGES_TO_LOAD = 15
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -291,6 +307,7 @@ JAZZMIN_SETTINGS = {
         "products.OpenSearch" :"fas fa-search-plus",     
         "project_auth.Client" :"fas fa-user-circle",
         "ranking.Rank" :"fas fa-chess-queen",
+        "conversare.MessageModel":"far fa-comment",
         "core_config.ConfigApp" : "fas fa-cogs",
         "core_auth.CoreUser": "fas fa-address-card",
         "django_celery_results.TaskResult":"fas fa-poll",
@@ -300,6 +317,7 @@ JAZZMIN_SETTINGS = {
         "django_celery_beat.CrontabSchedule": "fas fa-calendar-alt",
         "django_celery_beat.SolarSchedule": "fas fa-globe-americas",
         "django_celery_beat.ClockedSchedule": "fas fa-clock",
+        "core_auth.CoreUser": "fas fa-address-card",        
     },
     
 }
