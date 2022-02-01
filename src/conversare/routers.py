@@ -11,5 +11,5 @@ urlpatterns = [
     path(r'api/v1/', include(router.urls)),
 
     path('', login_required(ChatView.as_view()), name='home'),
-    path('test', CeleryTest.as_view(), name='teste'),
+    path('test', CeleryTest.as_view(), name='teste'), #test api
 ]
