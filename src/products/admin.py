@@ -7,8 +7,6 @@ from .models import (
     Products, 
     ProductImages,
     Tag,
-    Like,
-    Dislike,
     OpenSearch
     )
 
@@ -17,15 +15,6 @@ from .models import (
 class OpenSearchAdmin(admin.ModelAdmin):
     readonly_fields = ['own_product', 'active']
     pass
-
-
-class LikeAdmin(admin.ModelAdmin):
-    pass
-
-
-class DislikeAdmin(admin.ModelAdmin):
-    pass
-
 
 
 # Imagem do Produto Inline
@@ -83,6 +72,4 @@ admin.site.register(SubCategory, SubCategoryAdmin)
 admin.site.register(Products, ProductsAdmin)
 admin.site.register(ProductImages, ProductImagesAdmin)
 admin.site.register(Tag, TagAdmin)
-admin.site.register(Like, LikeAdmin)
-admin.site.register(Dislike, DislikeAdmin)
 admin.site.register(OpenSearch, OpenSearchAdmin)

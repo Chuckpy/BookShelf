@@ -103,36 +103,11 @@ class Products(BaseMixin):
 
 
 
-class Like(BaseMixin):
-
-    id = UUIDField(primary_key=True, version=4, editable=False)
-    lista = models.ManyToManyField(Products, blank=True)
-
-    class Meta: 
-        verbose_name = "Curtidos"
-        verbose_name_plural = "Curtidos"
-
-    def __str__(self):
-        return f"Like {self.id}"
-
-class Dislike(BaseMixin):
-
-    id = UUIDField(primary_key=True, version=4, editable=False)
-    lista = models.ManyToManyField(Products, blank=True)
-
-    class Meta: 
-        verbose_name = "Não Curtidos"
-        verbose_name_plural = "Não Curtidos"
-    
-    def __str__(self):
-        return f"Unlike {self.id}"
-
-
 class OpenSearch(BaseMixin):
     
-    own_product = models.OneToOneField(Products, blank=True, null=True, on_delete=models.CASCADE)
-    like_list = models.ForeignKey(Like, on_delete=models.CASCADE)
-    dislike_list = models.ForeignKey(Dislike, on_delete=models.CASCADE)
+    own_product = models.OneToOneField(Products, blank=True, null=True, on_delete=models.CASCADE, verbose_name="Produto em Busca")
+    like_list = models.ManyToManyField(Products, related_name="likes" , verbose_name="Lista de Curtidos", blank=True)
+    dislike_list = models.ManyToManyField(Products, related_name="unlikes" , verbose_name="Lista de Não Curtidos", blank=True)
 
     class Meta: 
         verbose_name = "Aberto para Busca"
@@ -140,7 +115,7 @@ class OpenSearch(BaseMixin):
 
 
     def __str__(self):
-        return f"Busca|{self.own_product.owner.username}|{self.own_product.name}"
+        return f"{self.own_product.owner.username}  |  {self.own_product.name}"
 
 
     def save(self, *args, **kwargs):
@@ -150,6 +125,9 @@ class OpenSearch(BaseMixin):
             for config in all_configs:
                 config.active = False
                 config.save()
+
+        # like_list1 = list(search1.like_list.values_list('pk', flat=True))
+        # list3 = [value for value in like_list1 if value in like_list2]
 
         super(OpenSearch, self).save(*args, **kwargs)
     
@@ -191,7 +169,7 @@ class ProductImages(BaseMixin):
                 print(e)
       
         super().save(*args, **kwargs)
-    
+
 
 
 @receiver(pre_save, sender = Category)
@@ -208,12 +186,7 @@ def handler(sender, *args, **kwargs):
     instance = kwargs.get('instance')
     if instance.search_bool  :
         try :
-            like_list = Like.objects.create()
-            dislike_list = Dislike.objects.create()
-            OpenSearch.objects.create(
-                own_product=instance,
-                like_list=like_list,
-                dislike_list=dislike_list)
+            OpenSearch.objects.create(own_product=instance)
             print("Produto e OpenSearch Feito com sucesso!")
         except Exception :
             raise Exception("Falha ao criar o modelo de Busca")

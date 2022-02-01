@@ -21,6 +21,12 @@ class MessageModel(BaseMixin):
                            related_name='to_user', db_index=True)
     body = models.TextField(max_length=5000, verbose_name='Texto')
 
+    '''
+    if displayed to the user  it turns to true
+    '''
+    # displayed = models.BooleanField(default=False) 
+
+
     def __str__(self):
         return str(self.id)
 
@@ -38,7 +44,7 @@ class MessageModel(BaseMixin):
 
         channel_layer = get_channel_layer()
         # print(f"user.id {self.user.id}")
-        # print(f"user.id {self.recipient.id}")
+        # print(f"user.id {self.recipient.id}")' 
 
         async_to_sync(channel_layer.group_send)(f"{self.user.id}", notification)        
         async_to_sync(channel_layer.group_send)(f"{self.recipient.id}", notification)

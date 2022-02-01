@@ -71,6 +71,8 @@ class UserModelViewSet(ModelViewSet):
     def list(self, request, *args, **kwargs):
         # Get all users except yourself
         self.queryset = self.queryset.exclude(id=request.user.id)
+        # Get all users that have matched
+        # still didn't have a match model
         return super(UserModelViewSet, self).list(request, *args, **kwargs)
 
 
