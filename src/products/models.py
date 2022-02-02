@@ -1,5 +1,6 @@
+from traceback import print_tb
 from django.db import models
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from django.core.files import File
 from rest_framework.reverse import reverse
@@ -108,6 +109,12 @@ class OpenSearch(BaseMixin):
     own_product = models.OneToOneField(Products, blank=True, null=True, on_delete=models.CASCADE, verbose_name="Produto em Busca")
     like_list = models.ManyToManyField(Products, related_name="likes" , verbose_name="Lista de Curtidos", blank=True)
     dislike_list = models.ManyToManyField(Products, related_name="unlikes" , verbose_name="Lista de Não Curtidos", blank=True)
+    match =  models.ManyToManyField(Products, related_name="matches", verbose_name="Lista de Combinações", blank=True)
+
+
+    def total_likes(self):
+        return self.like_list.count()
+
 
     class Meta: 
         verbose_name = "Aberto para Busca"
@@ -116,21 +123,6 @@ class OpenSearch(BaseMixin):
 
     def __str__(self):
         return f"{self.own_product.owner.username}  |  {self.own_product.name}"
-
-
-    def save(self, *args, **kwargs):
-        # -- efeito "singleton", apenas uma unica configuracao ativa sempre
-        if self.active:
-            all_configs = OpenSearch.objects.all()
-            for config in all_configs:
-                config.active = False
-                config.save()
-
-        # like_list1 = list(search1.like_list.values_list('pk', flat=True))
-        # list3 = [value for value in like_list1 if value in like_list2]
-
-        super(OpenSearch, self).save(*args, **kwargs)
-    
 
 
 # String de caminho do arquivo
@@ -172,13 +164,49 @@ class ProductImages(BaseMixin):
 
 
 
-@receiver(pre_save, sender = Category)
-def handler(sender, *args, **kwargs):
-    lista = ['Teste', 'Test', 'test', 'teste']
-    instance = kwargs.get('instance')
-    if instance.name in lista :
-        raise NameError("Object name can generate redundancy")
+@receiver(post_save, sender = OpenSearch)
+def match_maker(sender, instance, *args, **kwargs):
 
+    own_product_pk = instance.own_product.pk    
+    like_list = list(instance.like_list.values_list('pk', flat=True))
+    match_list = list(instance.match.values_list('pk', flat=True))
+
+    
+    if like_list :
+        try:
+            for el in like_list:
+                prod = Products.objects.get(id=el)
+                open_search = OpenSearch.objects.get(own_product=prod)
+                likes = list(open_search.like_list.values_list('pk', flat=True))    
+
+                if own_product_pk in likes :            
+                    try :
+                        instance.match.add(prod)
+                    except Exception :
+                        pass     
+
+            # Cleaning matching list after adding new item 
+            # If match list have a different element to the like_list, remove it
+            rest_matchings = match_list
+            if like_list:
+                for item in like_list:
+                    if item in rest_matchings:
+                        rest_matchings.remove(item)
+
+            if rest_matchings :
+                for item in rest_matchings :
+                    instance.match.remove(Products.objects.get(id=item))        
+
+        except Exception as e :
+            print(e)
+
+    # In case that doesn't exist likes, delete the remaining matches
+    elif not like_list :
+        for el in match_list :
+            instance.match.remove(Products.objects.get(pk=el))
+
+      
+m2m_changed.connect(match_maker, sender=OpenSearch.like_list.through)
 
 @receiver(post_save, sender = Products)
 def handler(sender, *args, **kwargs):
@@ -187,6 +215,6 @@ def handler(sender, *args, **kwargs):
     if instance.search_bool  :
         try :
             OpenSearch.objects.create(own_product=instance)
-            print("Produto e OpenSearch Feito com sucesso!")
+            # print("Produto e OpenSearch Feito com sucesso!")
         except Exception :
             raise Exception("Falha ao criar o modelo de Busca")
