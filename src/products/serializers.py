@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse
-from .models import Products
+from .models import Products, OpenSearch
 
 class ProductSerializer(serializers.ModelSerializer):
     
@@ -15,7 +15,14 @@ class ProductSerializer(serializers.ModelSerializer):
     def get_links(self, obj):
         request = self.context['request']
         return {
-            'self': reverse('products-detail-detail', kwargs={'slug': obj.slug}, request=request),
-            # 'delete': reverse('products-detail-detail', kwargs={'slug': obj.slug}, request=request),
+            'self': reverse('products-detail-detail', kwargs={'slug': obj.slug}, request=request),            
             'update': reverse('products-update-detail', kwargs={'slug': obj.slug}, request=request)
         }
+
+
+class OpenSearchSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = OpenSearch
+        fields = ('own_product', 'like_list','dislike_list', 'match')
+

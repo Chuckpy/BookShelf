@@ -15,33 +15,8 @@ from ranking.models import Rank
 def upload_perfil_user(instance, filename):
     return f"profile_photos/{instance.username}/{filename}"
 
-
 DEFAULT_RANK=None
 level_rank=None
-
-
-'''
-    Regra de ranqueamento
-    Necessário configuração inicial para iniciar o projeto
-tupla contendo o valor entre qual numero de exp é o rank de cada usuário
-ex : (
-    ( (1,2), Rank.object.get(id=1) ),
-    ( (2,3), Rank.object.get(id=2) )
-)
-'''
-try :    
-    config = get_config()
-    if config :
-        DEFAULT_RANK=config.default_rank.id
-
-        level_rank = (
-            ( (0,1000), DEFAULT_RANK),    
-            ( (1000,2000) , DEFAULT_RANK+1),
-        )
-
-except Exception as e :
-    print("Configuração inicial é necessária \n "+e)
-    
 
 class Client(CoreUser, AddressMixin):
 
@@ -80,17 +55,33 @@ class Client(CoreUser, AddressMixin):
             except Exception as e :
                 print(e)
 
-        try:
-            
-            if level_rank :                    
-                for el in level_rank :
-                    if (self.experience >= el[0][0]) and (self.experience < el[0][1]):
-                        self.rank = Rank.objects.get(id=el[1])
+        if self.rank :                
+            try:
+                '''
+                    Ranking rule
+                Initial setup required to start the project tuple 
+                containing the value between which exp number is the rank of each user
+                eg : (
+                    ( (1,2), Rank.object.get(id=1) ),
+                    ( (2,3), Rank.object.get(id=2) )
+                )
+                '''
+                config = get_config()
+                if config :
+                    DEFAULT_RANK=config.default_rank.id
 
-        except Exception as e :
-            print(e)
-        
-            
+                    level_rank = (
+                        ( (0,1000), DEFAULT_RANK),
+                        # ( (1000,2000) , DEFAULT_RANK+1),
+                    )
+                
+                if level_rank :                    
+                    for el in level_rank :
+                        if (self.experience >= el[0][0]) and (self.experience < el[0][1]):
+                            self.rank = Rank.objects.get(id=el[1])
+
+            except Exception as e :
+                print("Initial config required \n "+e)            
 
         super().save(*args, **kwargs)
 
