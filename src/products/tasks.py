@@ -1,4 +1,5 @@
 from products.models import Products, OpenSearch
+import uuid
 from celery import shared_task
 
 
@@ -9,11 +10,14 @@ def match_maker_delay(like_list, own_pk, instance_pk, match_list):
         for el in like_list:
             prod = Products.objects.get(id=el)
             open_search = OpenSearch.objects.get(own_product=prod)
-            likes = list(open_search.like_list.values_list('pk', flat=True))    
-
-            if own_pk in likes :
+            likes = list(open_search.like_list.values_list('pk', flat=True))
+            uuid_own_pk = uuid.UUID(own_pk)
+            if uuid_own_pk in likes :
                 try :
-                    OpenSearch.objects.get(pk=instance_pk).match.add(prod)
+                    open_search = OpenSearch.objects.get(pk=instance_pk) 
+                    print(open_search)
+                    open_search.match.add(prod)
+
                 except Exception :
                     pass     
 
@@ -32,5 +36,4 @@ def match_maker_delay(like_list, own_pk, instance_pk, match_list):
     except Exception as e :
         print(e)
 
-    return("Done")
     
