@@ -182,7 +182,7 @@ def match_maker(sender, instance, *args, **kwargs):
         match_maker_delay.delay(like_list, own_product_pk, search_pk, match_list)
         
     # In case that doesn't exist likes, delete the remaining matches
-    else :
+    elif not like_list :
         for el in match_list :
             instance.match.remove(Products.objects.get(pk=el))
 
@@ -199,3 +199,4 @@ def handler(sender, *args, **kwargs):
             # print("Produto e OpenSearch Feito com sucesso!")
         except Exception :
             raise Exception("Falha ao criar o modelo de Busca")
+
