@@ -106,7 +106,8 @@ class Products(BaseMixin):
 
 class OpenSearch(BaseMixin):
     
-    own_product = models.OneToOneField(Products, blank=True, null=True, on_delete=models.CASCADE, verbose_name="Produto em Busca")
+    own_product = models.OneToOneField(Products, blank=True, on_delete=models.CASCADE, verbose_name="Produto em Busca",
+    help_text="Esse é o Produto que esta em busca, estar em qualquer uma das listas resultará em erro")
     like_list = models.ManyToManyField(Products, related_name="likes" , verbose_name="Lista de Curtidos", blank=True)
     dislike_list = models.ManyToManyField(Products, related_name="unlikes" , verbose_name="Lista de Não Curtidos", blank=True)
     match =  models.ManyToManyField(Products, related_name="matches", verbose_name="Lista de Combinações", blank=True)
@@ -115,6 +116,8 @@ class OpenSearch(BaseMixin):
     def total_likes(self):
         return self.like_list.count()
 
+    def total_matches(self):
+        return self.match.count()
 
     class Meta: 
         verbose_name = "Aberto para Busca"
@@ -163,45 +166,23 @@ class ProductImages(BaseMixin):
         super().save(*args, **kwargs)
 
 
-
 @receiver(post_save, sender = OpenSearch)
 def match_maker(sender, instance, *args, **kwargs):
 
+    search_pk = instance.pk
     own_product_pk = instance.own_product.pk    
     like_list = list(instance.like_list.values_list('pk', flat=True))
     match_list = list(instance.match.values_list('pk', flat=True))
 
     
     if like_list :
-        try:
-            for el in like_list:
-                prod = Products.objects.get(id=el)
-                open_search = OpenSearch.objects.get(own_product=prod)
-                likes = list(open_search.like_list.values_list('pk', flat=True))    
 
-                if own_product_pk in likes :            
-                    try :
-                        instance.match.add(prod)
-                    except Exception :
-                        pass     
+        from .tasks import match_maker_delay
 
-            # Cleaning matching list after adding new item 
-            # If match list have a different element to the like_list, remove it
-            rest_matchings = match_list
-            if like_list:
-                for item in like_list:
-                    if item in rest_matchings:
-                        rest_matchings.remove(item)
-
-            if rest_matchings :
-                for item in rest_matchings :
-                    instance.match.remove(Products.objects.get(id=item))        
-
-        except Exception as e :
-            print(e)
-
+        match_maker_delay.delay(like_list, own_product_pk, search_pk, match_list)
+        
     # In case that doesn't exist likes, delete the remaining matches
-    elif not like_list :
+    else :
         for el in match_list :
             instance.match.remove(Products.objects.get(pk=el))
 

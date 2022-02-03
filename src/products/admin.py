@@ -14,7 +14,7 @@ from .models import (
 
 class OpenSearchAdmin(admin.ModelAdmin):
     fields=('own_product','like_list','dislike_list','match','active')
-    list_display=('own_product','total_likes',)
+    list_display=('own_product','total_likes','total_matches')
     readonly_fields = ['own_product','match', 'active']    
     pass
 

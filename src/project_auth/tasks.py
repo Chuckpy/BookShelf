@@ -14,10 +14,10 @@ def create_random_user(total):
 
         user = ''.join(random.choices(string.ascii_letters, k = S))  
         passw = ''.join(random.choices(string.digits + string.digits, k = S)) 
-        try :
-            usuario = CoreUser.objects.create(username=user,password=passw)
+        try :            
+            usuario = CoreUser.objects.create(username=user,password=passw)            
             usuario.save()
-            print(f'{i+1} Usuario \"{usuario.username}\" cadastrado com sucesso !')
+            # print(f'{i+1} Usuario \"{usuario.username}\" cadastrado com sucesso !')
             
         except Exception as e :
             create_random_user.reset()
