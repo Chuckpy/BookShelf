@@ -1,6 +1,6 @@
-from traceback import print_tb
+from turtle import pos
 from django.db import models
-from django.db.models.signals import post_save, m2m_changed
+from django.db.models.signals import post_save, m2m_changed , pre_save
 from django.dispatch import receiver
 from django.core.files import File
 from rest_framework.reverse import reverse
@@ -166,28 +166,42 @@ class ProductImages(BaseMixin):
         super().save(*args, **kwargs)
 
 
-@receiver(post_save, sender = OpenSearch)
-def match_maker(sender, instance, *args, **kwargs):
+# @receiver(post_save, sender = OpenSearch)
+# def match_maker(sender, instance, *args, **kwargs):
 
+#     like_list = list(instance.like_list.values_list('pk', flat=True))
+#     match_list = list(instance.match.values_list('pk', flat=True))
+        
+#     # In case that doesn't exist likes, delete the remaining matches
+#     if not like_list:
+#         print("Lista de Likes vazia, apagar todos os matches")
+#         for el in match_list :
+#             produto = Products.objects.get(pk=el)
+#             instance.match.remove(produto)
+          
+
+def matching(signal, sender=OpenSearch, **kwargs):
+
+    instance = kwargs['instance']
     search_pk = instance.pk
     own_product_pk = instance.own_product.pk    
     like_list = list(instance.like_list.values_list('pk', flat=True))
     match_list = list(instance.match.values_list('pk', flat=True))
 
-    
     if like_list :
 
         from .tasks import match_maker_delay
 
-        match_maker_delay.delay(like_list, own_product_pk, search_pk, match_list)
-        
-    # In case that doesn't exist likes, delete the remaining matches
-    elif not like_list :
-        for el in match_list :
-            instance.match.remove(Products.objects.get(pk=el))
+        match_maker_delay.delay(own_product_pk, search_pk, match_list,like_list)
 
-      
-m2m_changed.connect(match_maker, sender=OpenSearch.like_list.through)
+    # In case that doesn't exist likes, delete the remaining matches
+    if not like_list:
+        print("Lista de Likes vazia, apagar todos os matches")
+        for el in match_list :
+            produto = Products.objects.get(pk=el)
+            instance.match.remove(produto)
+
+m2m_changed.connect(matching, sender=OpenSearch.like_list.through)
 
 @receiver(post_save, sender = Products)
 def handler(sender, *args, **kwargs):

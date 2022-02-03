@@ -4,10 +4,11 @@ from celery import shared_task
 
 
 @shared_task(name='delayed_matching')
-def match_maker_delay(like_list, own_pk, instance_pk, match_list):    
+def match_maker_delay(own_pk, instance_pk, match_list,like_list=None):    
 
     
-    if like_list :            
+    if like_list :
+
         try:
 
             for el in like_list:
@@ -41,8 +42,10 @@ def match_maker_delay(like_list, own_pk, instance_pk, match_list):
             print(e)
 
     # In case that doesn't exist likes, delete the remaining matches
-    # elif like_list :
-    #     print("There are no matches")
-    #     for el in match_list :
-    #         OpenSearch.objects.get(pk=instance_pk).match.remove(Products.objects.get(pk=el))
-    
+    elif like_list is None :
+        print("There are no matches")
+        for el in match_list :
+            OpenSearch.objects.get(pk=instance_pk).match.remove(Products.objects.get(pk=el))
+
+    # return("Done")
+
