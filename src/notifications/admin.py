@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Notifications
+class NotificationsAdmin(admin.ModelAdmin):
+    pass
 
-# Register your models here.
+admin.site.register(Notifications, NotificationsAdmin)
