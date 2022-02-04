@@ -1,6 +1,6 @@
 from turtle import pos
 from django.db import models
-from django.db.models.signals import post_save, m2m_changed , pre_save
+from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from django.core.files import File
 from rest_framework.reverse import reverse
@@ -167,20 +167,8 @@ class ProductImages(BaseMixin):
 
 
 # @receiver(post_save, sender = OpenSearch)
-# def match_maker(sender, instance, *args, **kwargs):
 
-#     like_list = list(instance.like_list.values_list('pk', flat=True))
-#     match_list = list(instance.match.values_list('pk', flat=True))
-        
-#     # In case that doesn't exist likes, delete the remaining matches
-#     if not like_list:
-#         print("Lista de Likes vazia, apagar todos os matches")
-#         for el in match_list :
-#             produto = Products.objects.get(pk=el)
-#             instance.match.remove(produto)
-          
-
-def matching(signal, sender=OpenSearch, **kwargs):
+def matching(sender,*args, **kwargs):
 
     instance = kwargs['instance']
     search_pk = instance.pk
@@ -189,19 +177,19 @@ def matching(signal, sender=OpenSearch, **kwargs):
     match_list = list(instance.match.values_list('pk', flat=True))
 
     if like_list :
-
         from .tasks import match_maker_delay
 
         match_maker_delay.delay(own_product_pk, search_pk, match_list,like_list)
 
     # In case that doesn't exist likes, delete the remaining matches
     if not like_list:
-        print("Lista de Likes vazia, apagar todos os matches")
         for el in match_list :
             produto = Products.objects.get(pk=el)
             instance.match.remove(produto)
 
 m2m_changed.connect(matching, sender=OpenSearch.like_list.through)
+
+
 
 @receiver(post_save, sender = Products)
 def handler(sender, *args, **kwargs):
@@ -209,8 +197,15 @@ def handler(sender, *args, **kwargs):
     instance = kwargs.get('instance')
     if instance.search_bool  :
         try :
-            OpenSearch.objects.create(own_product=instance)
-            # print("Produto e OpenSearch Feito com sucesso!")
+            OpenSearch.objects.create(own_product=instance)            
         except Exception :
             raise Exception("Falha ao criar o modelo de Busca")
-
+    elif not instance.search_bool :
+        try : # TODO TRY this
+            open_search = OpenSearch.objects.get(own_product=instance)            
+            if open_search :
+                open_search.delete()
+        except Exception :
+            print("Não existe modelo de Buca desse objeto")
+            pass
+        

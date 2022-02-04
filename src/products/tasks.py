@@ -33,8 +33,7 @@ def match_maker_delay(own_pk, instance_pk, match_list,like_list=None):
                         rest_matchings.remove(item)
 
             if rest_matchings :
-                open_search = OpenSearch.objects.get(pk=instance_pk)
-                print("Existe e será excluido")
+                open_search = OpenSearch.objects.get(pk=instance_pk)                
                 for item in rest_matchings :
                     open_search.match.remove(Products.objects.get(id=item))        
 
@@ -43,7 +42,6 @@ def match_maker_delay(own_pk, instance_pk, match_list,like_list=None):
 
     # In case that doesn't exist likes, delete the remaining matches
     elif like_list is None :
-        print("There are no matches")
         for el in match_list :
             OpenSearch.objects.get(pk=instance_pk).match.remove(Products.objects.get(pk=el))
 
