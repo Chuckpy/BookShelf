@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 
 from asgiref.sync import async_to_sync
@@ -8,6 +8,8 @@ from channels.layers import get_channel_layer
 
 from model_utils.fields import UUIDField
 from core.utils.mixins.base import BaseMixin
+
+from notifications.models import Notification
 
 
 class MessageModel(BaseMixin):
@@ -43,8 +45,6 @@ class MessageModel(BaseMixin):
         }
 
         channel_layer = get_channel_layer()
-        # print(f"user.id {self.user.id}")
-        # print(f"user.id {self.recipient.id}")' 
 
         async_to_sync(channel_layer.group_send)(f"{self.user.id}", notification)        
         async_to_sync(channel_layer.group_send)(f"{self.recipient.id}", notification)
@@ -57,9 +57,17 @@ class MessageModel(BaseMixin):
         verbose_name_plural = 'Mensagens'
         ordering = ('-registration',)
 
+@receiver(post_save, sender=MessageModel)
+def ws_signal(sender, *args, **kwargs):
+
+    instance = kwargs.get('instance')    
+    if instance.id :
+        message_user = instance.user
+        notif = Notification.objects.create(user_receiver=message_user, type_of_notification=instance)
+        notif.save()
 
 @receiver(pre_save, sender=MessageModel)
-def handler(sender, *args, **kwargs):
+def ws_signal(sender, *args, **kwargs):
 
     instance = kwargs.get('instance')    
     if instance.id :

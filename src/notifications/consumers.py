@@ -5,7 +5,7 @@ from asgiref.sync import async_to_sync,sync_to_async
 from channels.layers import get_channel_layer
 from core.core_auth.models import CoreUser
 
-from .models import Notifications
+from .models import Notification
 
 
 @database_sync_to_async
@@ -17,27 +17,35 @@ def get_user(user_id):
 
 @database_sync_to_async
 def create_notification(receiver,typeof="task_created",status="unread"):
-    notification_to_create=Notifications.objects.create(user_receiver=receiver,type_of_notification=typeof)
+    notification_to_create=Notification.objects.create(user_receiver=receiver,type_of_notification=typeof)
     print('I am here to help')
     return (notification_to_create.user_receiver.username,notification_to_create.type_of_notification)
 
 class NotificationConsumer(AsyncWebsocketConsumer):
 
     async def websocket_connect(self, event):
-        print(self.scope)
-        await self.accept()
+                
+        user_id = self.scope['user'].pk
+        self.group_name = f"{user_id}"
 
-        await self.send(json.dumps({
-            "type":"websocket.send",
-            "text":"hello world"
-        }))
-        self.room_name = 'test_consumer'
-        self.room_group_name = 'test_consumer_group'
-        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+        #Joining room group 
+        await self.channel_layer.group_add(
+            self.group_name,
+            self.channel_name
+        )
+        
+        await self.accept()
+        
+        # await self.send(json.dumps({
+        #     "type":"websocket.send",
+        #     "text":"hello world"
+        # # }))
+
         self.send({
             "type": "websocket.send",
             "text":"room made"
         })
+
     async def websocket_receive(self,event):
         print(">"*50)
         print(event)
@@ -57,6 +65,11 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         print('receive', event)
     
     async def websocket_disconnect(self, event):
+        # Leave room group
+        await self.channel_layer.group_discard(
+            self.group_name,
+            self.channel_name
+        )
         print('disconnect', event)
     
     async def send_notification(self, event):

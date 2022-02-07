@@ -115,5 +115,9 @@ $(document).ready(function () {
     };
 });
 
+// var socket = new WebSocket(
+//     'ws://' + window.location.host +
+//     '/client_id/notifications/')
+
 
 
