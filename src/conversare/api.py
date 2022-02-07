@@ -12,6 +12,7 @@ from rest_framework import status
 
 
 from django.conf import settings
+
 from core.core_auth.models import CoreUser
 from .serializers import MessageModelSerializer, UserModelSerializer
 from .models import MessageModel
@@ -45,12 +46,14 @@ class MessageModelViewSet(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         self.queryset = self.queryset.filter(Q(recipient=request.user) |
-                                             Q(user=request.user))
+                                             Q(user=request.user))        
         target = self.request.query_params.get('target', None)
-        if target is not None:
+        if target :
             self.queryset = self.queryset.filter(
                 Q(recipient=request.user, user__username=target) |
                 Q(recipient__username=target, user=request.user))
+            # displaying all queryset
+            self.queryset.update(displayed=True)
         return super(MessageModelViewSet, self).list(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):

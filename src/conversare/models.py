@@ -21,10 +21,8 @@ class MessageModel(BaseMixin):
                            related_name='to_user', db_index=True)
     body = models.TextField(max_length=5000, verbose_name='Texto')
 
-    '''
-    if displayed to the user  it turns to true
-    '''
-    # displayed = models.BooleanField(default=False) 
+    # if displayed to the user  it turns to true
+    displayed = models.BooleanField(default=False, verbose_name="Visualizado") 
 
 
     def __str__(self):
