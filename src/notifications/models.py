@@ -16,10 +16,15 @@ NOTIFICATION_STATUS = (
 
 class Notification(BaseMixin):
     #TODO retirar possibilidade de variaveis nulas 
-    # user_sender=models.ForeignKey(settings.AUTH_USER_MODEL,null=True,blank=True,related_name='user_sender',on_delete=models.CASCADE)
-    user_receiver=models.ForeignKey(settings.AUTH_USER_MODEL,null=True,blank=True,related_name='user_revoker',on_delete=models.CASCADE)
+    user_receiver=models.ForeignKey(settings.AUTH_USER_MODEL,null=True,blank=True,related_name='user_revoker',on_delete=models.CASCADE, verbose_name="Usuário Recebedor")
     status=models.CharField(max_length=264,null=True,blank=True, choices=NOTIFICATION_STATUS, default="unread")
-    type_of_notification=models.CharField(max_length=264,null=True,blank=True)
+    message=models.TextField(max_length=2000, null=True,blank=True, verbose_name="Mensagem")
+    type_of_notification=models.CharField(max_length=264,null=True,blank=True,verbose_name="Tipos de Notificações")
+
+
+    def __str__(self):
+        return(f"{self.user_receiver.username}-{self.id}")
+
 
     class Meta:
         verbose_name="Notificação"
@@ -30,7 +35,7 @@ class Notification(BaseMixin):
         Inform client there is a new notification
         '''
         notification = {
-            'type': 'recieve_group_message',
+            'type': 'recieve_group_notification',
             'message': f'{self.id}'
         }
 
@@ -46,5 +51,4 @@ def handler(sender, *args, **kwargs):
 
     instance = kwargs.get('instance')    
     if instance.id :
-        instance.body = instance.body.strip()
         instance.notify_ws_clients()

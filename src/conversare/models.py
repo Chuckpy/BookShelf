@@ -57,14 +57,14 @@ class MessageModel(BaseMixin):
         verbose_name_plural = 'Mensagens'
         ordering = ('-registration',)
 
-@receiver(post_save, sender=MessageModel)
-def ws_signal(sender, *args, **kwargs):
+# @receiver(post_save, sender=MessageModel)
+# def ws_signal_notification(sender, *args, **kwargs):
 
-    instance = kwargs.get('instance')    
-    if instance.id :
-        message_user = instance.user
-        notif = Notification.objects.create(user_receiver=message_user, type_of_notification=instance)
-        notif.save()
+#     instance = kwargs.get('instance')    
+#     if instance.id :
+#         message_user = instance.user
+#         notif = Notification.objects.create(user_receiver=message_user, type_of_notification=instance)
+#         notif.save()
 
 @receiver(pre_save, sender=MessageModel)
 def ws_signal(sender, *args, **kwargs):
