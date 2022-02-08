@@ -1,6 +1,6 @@
 from turtle import pos
 from django.db import models
-from django.db.models.signals import post_save, m2m_changed
+from django.db.models.signals import post_save, m2m_changed, pre_save
 from django.dispatch import receiver
 from django.core.files import File
 from rest_framework.reverse import reverse
@@ -107,7 +107,7 @@ class Products(BaseMixin):
 class OpenSearch(BaseMixin):
     
     own_product = models.OneToOneField(Products, blank=True, on_delete=models.CASCADE, verbose_name="Produto em Busca",
-    help_text="Esse é o Produto que esta em busca, estar em qualquer uma das listas resultará em erro")
+    help_text="Esse é o Produto que esta em busca, estar em qualquer uma das listas abaixo resultará em erro")
     like_list = models.ManyToManyField(Products, related_name="likes" , verbose_name="Lista de Curtidos", blank=True)
     dislike_list = models.ManyToManyField(Products, related_name="unlikes" , verbose_name="Lista de Não Curtidos", blank=True)
     match =  models.ManyToManyField(Products, related_name="matches", verbose_name="Lista de Combinações", blank=True)
@@ -126,6 +126,12 @@ class OpenSearch(BaseMixin):
 
     def __str__(self):
         return f"{self.own_product.owner.username}  |  {self.own_product.name}"
+
+    
+    def save(self, *args, **kwargs):
+
+
+        super(OpenSearch, self).save(*args, **kwargs)
 
 
 # String de caminho do arquivo
@@ -166,14 +172,19 @@ class ProductImages(BaseMixin):
         super().save(*args, **kwargs)
 
 
-# @receiver(post_save, sender = OpenSearch)
+'''
+Here I'm trying to lead with the match maker and use the celery to run in the background.
+For tasks that exist here run properly, celery must be running
+'''
 
-def matching(sender,*args, **kwargs):
-
-    instance = kwargs['instance']
+@receiver(post_save, sender = OpenSearch)
+def matching(sender, instance, **kwargs):
+    print("I'm here to help")
+    
     search_pk = instance.pk
     own_product_pk = instance.own_product.pk    
     like_list = list(instance.like_list.values_list('pk', flat=True))
+    print(like_list)
     match_list = list(instance.match.values_list('pk', flat=True))
 
     if like_list :
@@ -181,13 +192,20 @@ def matching(sender,*args, **kwargs):
 
         match_maker_delay.delay(own_product_pk, search_pk, match_list,like_list)
 
-    # In case that doesn't exist likes, delete the remaining matches
-    if not like_list:
-        for el in match_list :
-            produto = Products.objects.get(pk=el)
-            instance.match.remove(produto)
+# m2m_changed.connect(matching, sender=OpenSearch.like_list.through)
 
-m2m_changed.connect(matching, sender=OpenSearch.like_list.through)
+
+@receiver(post_save, sender = OpenSearch)
+def remove_remaining_matches(sender,instance, *args, **kwargs):
+            
+    like_list = list(instance.like_list.values_list('pk', flat=True))
+    match_list = list(instance.match.values_list('pk', flat=True))
+    
+    if not like_list:
+        for i in match_list :
+            product = Products.objects.get(pk=i)
+            instance.match.remove(product)
+
 
 
 

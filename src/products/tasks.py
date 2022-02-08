@@ -11,16 +11,19 @@ def match_maker_delay(own_pk, instance_pk, match_list,like_list=None):
 
         try:
 
-            for el in like_list:
-                prod = Products.objects.get(id=el)
-                open_search = OpenSearch.objects.get(own_product=prod)
+            products = Products.objects.filter(id__in=like_list)
+
+            for product in products:
+                open_search = OpenSearch.objects.get(own_product=product)
                 likes = list(open_search.like_list.values_list('pk', flat=True))
                 uuid_own_pk = uuid.UUID(own_pk)
                 if uuid_own_pk in likes :
                     try :
-                        open_search = OpenSearch.objects.get(pk=instance_pk)                         
-                        open_search.match.add(prod)
-
+                        open_search = OpenSearch.objects.get(pk=instance_pk)
+                        open_search.match.add(product)
+                        from_open_search = OpenSearch.objects.get(own_product=product)
+                        from_open_search.match.add(Products.objects.get(pk=instance_pk))
+                        
                     except Exception :
                         pass     
             
@@ -45,5 +48,6 @@ def match_maker_delay(own_pk, instance_pk, match_list,like_list=None):
         for el in match_list :
             OpenSearch.objects.get(pk=instance_pk).match.remove(Products.objects.get(pk=el))
 
-    # return("Done")
+
+    return "Done"
 
