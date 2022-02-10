@@ -173,40 +173,55 @@ class ProductImages(BaseMixin):
 
 
 '''
-Here I'm trying to lead with the match maker and use the celery to run in the background.
-For tasks that exist here run properly, celery must be running
+Here I'm trying to deal with the match maker and use the celery to run the matches in the background for future upgrades.
+For the method matchmaker that exist here run properly, celery must be running, while called
+You could run all Celery workers with the property framework command :
+
+celery -A project worker -l info
+
 '''
 
-@receiver(post_save, sender = OpenSearch)
-def matching(sender, instance, **kwargs):
-    print("I'm here to help")
+
+def matchmaker(sender, action, **kwargs) :
     
-    search_pk = instance.pk
-    own_product_pk = instance.own_product.pk    
-    like_list = list(instance.like_list.values_list('pk', flat=True))
-    print(like_list)
-    match_list = list(instance.match.values_list('pk', flat=True))
+    print("I'm running >>>>")
 
-    if like_list :
-        from .tasks import match_maker_delay
+    instance = kwargs.get('instance')
 
-        match_maker_delay.delay(own_product_pk, search_pk, match_list,like_list)
+    if action == "post_remove" :
 
-# m2m_changed.connect(matching, sender=OpenSearch.like_list.through)
+        like_list = list(instance.like_list.values_list('pk', flat=True))    
+        match_list = list(instance.match.values_list('pk', flat=True))
 
+        # Cleaning matching list after adding new item 
+        # If match list have a different element to the like_list, remove it
+        rest_matchings = match_list
+        if like_list:
+            for item in like_list:
+                if item in rest_matchings:
+                    rest_matchings.remove(item)
 
-@receiver(post_save, sender = OpenSearch)
-def remove_remaining_matches(sender,instance, *args, **kwargs):
-            
-    like_list = list(instance.like_list.values_list('pk', flat=True))
-    match_list = list(instance.match.values_list('pk', flat=True))
+        if rest_matchings :
+                        
+            for item in rest_matchings :
+                instance.match.remove(Products.objects.get(id=item))         
+        
     
-    if not like_list:
-        for i in match_list :
-            product = Products.objects.get(pk=i)
-            instance.match.remove(product)
+    if action == "post_add" :
+        
+        search_pk = instance.pk
+        own_product_id = instance.own_product.id
+        like_list = list(instance.like_list.values_list('pk', flat=True))    
+        match_list = list(instance.match.values_list('pk', flat=True))
 
+        if like_list :
+            from .tasks import match_maker_delay
 
+            match_maker_delay.delay(own_product_id, search_pk, match_list,like_list)
+    
+    
+    
+m2m_changed.connect(matchmaker, sender=OpenSearch.like_list.through)
 
 
 @receiver(post_save, sender = Products)
