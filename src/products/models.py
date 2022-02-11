@@ -186,6 +186,7 @@ def matchmaker(sender, action, **kwargs) :
 
     instance = kwargs.get('instance')
 
+    # Removing matches after removing likes
     if action == "post_remove" :
 
         like_list = list(instance.like_list.values_list('pk', flat=True))    
@@ -205,22 +206,36 @@ def matchmaker(sender, action, **kwargs) :
                 instance_remain_match = OpenSearch.objects.get(own_product=item)     
                 instance_remain_match.match.remove(instance.own_product)                
         
-    
+    # Matchmaker, here's the magic
     if action == "post_add" :
-        
         search_pk = instance.pk
         own_product_id = instance.own_product.id
-        like_list = list(instance.like_list.values_list('pk', flat=True))    
+        like_list = list(instance.like_list.values_list('pk', flat=True))
         match_list = list(instance.match.values_list('pk', flat=True))
 
+        # Remove own product from like and dislike list 
+        if own_product_id in like_list:
+            instance.like_list.remove(own_product_id)
+        
         if like_list :
             from .tasks import match_maker_delay
 
             match_maker_delay.delay(own_product_id, search_pk, match_list,like_list)
     
-    
+def self_unlike(sender, action, **kwargs):
+        
+    instance = kwargs.get('instance')
+
+    if action == "post_add" :
+
+        own_product_id = instance.own_product.id
+        dislike_list = list(instance.dislike_list.values_list('pk', flat=True))
+        
+        if own_product_id in dislike_list :
+            instance.dislike_list.remove(own_product_id)
     
 m2m_changed.connect(matchmaker, sender=OpenSearch.like_list.through)
+m2m_changed.connect(self_unlike, sender=OpenSearch.dislike_list.through)
 
 
 @receiver(post_save, sender = Products)
