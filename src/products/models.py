@@ -182,9 +182,7 @@ celery -A project worker -l info
 '''
 
 
-def matchmaker(sender, action, **kwargs) :
-    
-    print("I'm running >>>>")
+def matchmaker(sender, action, **kwargs) :    
 
     instance = kwargs.get('instance')
 
@@ -202,9 +200,10 @@ def matchmaker(sender, action, **kwargs) :
                     rest_matchings.remove(item)
 
         if rest_matchings :
-                        
             for item in rest_matchings :
-                instance.match.remove(Products.objects.get(id=item))         
+                instance.match.remove(Products.objects.get(id=item))                                
+                instance_remain_match = OpenSearch.objects.get(own_product=item)     
+                instance_remain_match.match.remove(instance.own_product)                
         
     
     if action == "post_add" :
