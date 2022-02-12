@@ -1,6 +1,5 @@
-from turtle import pos
 from django.db import models
-from django.db.models.signals import post_save, m2m_changed, pre_save
+from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from django.core.files import File
 from rest_framework.reverse import reverse
@@ -178,7 +177,6 @@ For the method matchmaker that exist here run properly, celery must be running, 
 You could run all Celery workers with the property framework command :
 
 celery -A project worker -l info
-
 '''
 
 

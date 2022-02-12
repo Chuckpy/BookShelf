@@ -8,19 +8,20 @@ class MessageModelSerializer(ModelSerializer):
     user = CharField(source='user.username', read_only=True)
     recipient = CharField(source='recipient.username')
 
-    def create(self, validated_data):
+    def create(self, validated_data):        
         user = self.context['request'].user
         recipient = get_object_or_404(
             CoreUser, username=validated_data['recipient']['username'])
         msg = MessageModel(recipient=recipient,
                            body=validated_data['body'],
-                           user=user)
+                           user=user,
+                           displayed=validated_data['displayed'])        
         msg.save()
         return msg
 
     class Meta:
         model = MessageModel
-        fields = ('id', 'user', 'recipient', 'registration', 'body')
+        fields = ('id', 'user', 'recipient', 'registration', 'body', 'displayed')
 
 
 class UserModelSerializer(ModelSerializer):

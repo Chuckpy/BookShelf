@@ -61,6 +61,8 @@ class MessageModelViewSet(ModelViewSet):
             self.queryset.filter(Q(recipient=request.user) |
                                  Q(user=request.user),
                                  Q(pk=kwargs['pk'])))
+        msg.displayed= True
+        msg.save()
         serializer = self.get_serializer(msg)
         return Response(serializer.data)
 
